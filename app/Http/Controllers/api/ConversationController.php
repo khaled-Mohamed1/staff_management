@@ -18,12 +18,12 @@ class ConversationController extends Controller
         try {
 
             $params=array(
-                'token' => 'stesyr4l776ze4xr'
+                'token' => 'mu0xczn4xdcr2n69'
             );
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance31729/chats?" .http_build_query($params),
+                CURLOPT_URL => "https://api.ultramsg.com/instance31797/chats?" .http_build_query($params),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -89,14 +89,14 @@ class ConversationController extends Controller
             $conversation = Conversation::find($request->conversation_id);
 
             $params=array(
-                'token' => 'stesyr4l776ze4xr',
+                'token' => 'mu0xczn4xdcr2n69',
                 'chatId' => $conversation->chat_ID,
                 'limit' => '10'
             );
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance31729/chats/messages?" .http_build_query($params),
+                CURLOPT_URL => "https://api.ultramsg.com/instance31797/chats/messages?" .http_build_query($params),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,

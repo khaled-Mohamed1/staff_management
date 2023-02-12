@@ -19,13 +19,13 @@ class MessageController extends Controller
 
             //send message to WhatsApp
             $params=array(
-                'token' => 'stesyr4l776ze4xr',
+                'token' => 'mu0xczn4xdcr2n69',
                 'to' => $conversation->chat_ID,
                 'body' => $request->body
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance31729/messages/chat",
+                CURLOPT_URL => "https://api.ultramsg.com/instance31797/messages/chat",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -48,14 +48,14 @@ class MessageController extends Controller
             //get message from WhatsApp
 
             $params2=array(
-                'token' => 'stesyr4l776ze4xr',
+                'token' => 'mu0xczn4xdcr2n69',
                 'chatId' => $conversation->chat_ID,
                 'limit' => '1'
             );
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance31729/chats/messages?" .http_build_query($params2),
+                CURLOPT_URL => "https://api.ultramsg.com/instance31797/chats/messages?" .http_build_query($params2),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
