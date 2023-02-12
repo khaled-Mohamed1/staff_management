@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\EmployeeController;
@@ -57,4 +58,9 @@ Route::group([
 
     });
 
+    Route::prefix('messages')->group(function () {
+
+        Route::post('send_message', [MessageController::class, 'sendMessage']);
+
+    });
 });

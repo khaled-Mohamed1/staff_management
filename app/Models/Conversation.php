@@ -15,6 +15,8 @@ class Conversation extends Model
         'chat_ID',
         'name',
         'image',
+        'isReadOnly',
+        'last_time',
         'status',
     ];
 

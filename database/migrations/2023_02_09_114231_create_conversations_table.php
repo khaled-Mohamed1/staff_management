@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('chat_ID')->nullable();
             $table->string('name')->nullable();
             $table->text('image')->nullable();
+            $table->boolean('isReadOnly')->default(false);
+            $table->string('last_time')->nullable();
             $table->string('status')->default('انتظار');
             $table->timestamps();
         });
