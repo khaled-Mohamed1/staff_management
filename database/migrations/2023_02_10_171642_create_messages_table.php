@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('from')->nullable();
             $table->string('to')->nullable();
             $table->text('body')->nullable();
+            $table->text('media')->nullable();
             $table->boolean('fromMe')->default(false);
             $table->string('type')->nullable();
             $table->timestamps();

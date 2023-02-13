@@ -105,4 +105,52 @@ class MessageController extends Controller
             ], 500);
         }
     }
+
+    public function webhook(){
+        $data = file_get_contents("php://input");
+        $event = json_decode($data, true);
+        if(isset($event)){
+            //Here, you now have event and can process them how you like e.g Add to the database or generate a response
+            $file = 'log.txt';
+            $data =json_encode($event)."\n";
+            file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+
+            $conversation = Conversation::where('chat_ID',$event['data']['from'])->first();
+
+            if(!$conversation){
+                $createConversation = Conversation::create([
+                    'chat_ID' =>  $event['data']['from'],
+                    'name' => $event['data']['pushname'],
+                    'isReadOnly' => false,
+                    'last_time' => $event['data']['time']
+                ]);
+            }
+
+            if($event['data']['type'] == 'chat'){
+                $new_message = Message::create([
+                    'message_id' => $event['data']['id'],
+                    'conversation_id' =>  $conversation->id ?? $createConversation->id,
+                    'from' => $event['data']['from'],
+                    'to' => $event['data']['to'],
+                    'body' => $event['data']['body'],
+                    'fromMe' => $event['data']['fromMe'],
+                    'type' => $event['data']['type'],
+                ]);
+                broadcast(new SendMessage($new_message));
+            }else{
+                $new_message = Message::create([
+                    'message_id' => $event['data']['id'],
+                    'conversation_id' =>  $conversation->id ?? $createConversation->id,
+                    'from' => $event['data']['from'],
+                    'to' => $event['data']['to'],
+                    'body' => $event['data']['body'],
+                    'media' => $event['data']['media'],
+                    'fromMe' => $event['data']['fromMe'],
+                    'type' => $event['data']['type'],
+                ]);
+                broadcast(new SendMessage($new_message));
+            }
+        }
+
+    }
 }

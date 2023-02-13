@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('login',[AuthController::class, 'login']);
+Route::post('webhook', [MessageController::class, 'webhook']);
 
 Route::group([
 

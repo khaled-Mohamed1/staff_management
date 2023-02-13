@@ -17,6 +17,7 @@ class Message extends Model
         'from',
         'to',
         'body',
+        'media',
         'fromMe',
         'type',
     ];

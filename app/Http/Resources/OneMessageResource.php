@@ -23,6 +23,7 @@ class OneMessageResource extends JsonResource
             "from" => $this->from,
             "to" => $this->to,
             "body" => $this->body,
+            "media" => $this->media,
             "fromMe" => $this->fromMe,
             "type" => $this->type,
             "created_at" => $this->created_at,
