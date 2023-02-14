@@ -55,7 +55,7 @@ class EmployeeController extends Controller
                     'ID_NO.digits' => 'رقم الهوية تحتوي على 9 ارقام!',
                     'phone_NO.required' => 'يجب ادخال رقم الجوال للموظف!',
                     'phone_NO.numeric' => 'يجب ادخال رقم الجوال بالأرقام!',
-                    'phone_NO.digits' => 'رقم الجوال تحتوي على 9 ارقام',
+                    'phone_NO.digits' => 'رقم الجوال تحتوي على 10 ارقام',
                     'job.required' => 'يجب ادخال وظيفة الموظف',
                     'image.required' => 'يجب ادخال صورة الموظف',
                 ]
@@ -129,7 +129,7 @@ class EmployeeController extends Controller
                     'ID_NO.digits' => 'رقم الهوية تحتوي على 9 ارقام!',
                     'phone_NO.required' => 'يجب ادخال رقم الجوال للموظف!',
                     'phone_NO.numeric' => 'يجب ادخال رقم الجوال بالأرقام!',
-                    'phone_NO.digits' => 'رقم الجوال تحتوي على 9 ارقام',
+                    'phone_NO.digits' => 'رقم الجوال تحتوي على 10 ارقام',
                     'job.required' => 'يجب ادخال وظيفة الموظف',
                 ]
             );
