@@ -46,7 +46,7 @@ class SettingController extends Controller
 
             if(isset($request->company_logo)){
                 $imageName = Str::random(32) . "." . $request->company_logo->getClientOriginalExtension();
-                $setting->company_logo = 'https://testing.pal-lady.com/public/storage/app/setting' . $imageName;
+                $setting->company_logo = 'https://testing.pal-lady.com/storage/app/public/setting' . $imageName;
                 Storage::disk('public')->put('setting/' . $imageName, file_get_contents($request->company_logo));
             }
 

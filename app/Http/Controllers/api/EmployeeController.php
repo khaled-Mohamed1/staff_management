@@ -81,7 +81,7 @@ class EmployeeController extends Controller
                 'phone_NO' => $request->phone_NO,
                 'role_id' => '2',
                 'job' => $request->job,
-                'image' => 'https://testing.pal-lady.com/public/storage/app/employees' . $imageName ,
+                'image' => 'https://testing.pal-lady.com/storage/app/public/employees' . $imageName ,
             ]);
             Storage::disk('public')->put('employees/' . $imageName, file_get_contents($request->image));
 
@@ -92,7 +92,7 @@ class EmployeeController extends Controller
                 'password' => $request->password
             ];
 
-            \Mail::to($request->email)->send(new \App\Mail\RegisterUserMail($details));
+//            \Mail::to($request->email)->send(new \App\Mail\RegisterUserMail($details));
 
             return response()->json([
                 'status' => true,
@@ -124,7 +124,6 @@ class EmployeeController extends Controller
                     'email.required' => 'يجب ادخال بريد الإلكتروني للموظف!',
                     'email.email' => 'البريد الإلكتروني يجب ان يحتوي على @',
                     'email.unique' => 'تم ادخال هذا البريد الإلكتروني من قبل',
-                    'password' => 'يجب ادخال كلمة المرور للموظف',
                     'ID_NO.required' => 'يجب ادخال رقم هوية للموظف!',
                     'ID_NO.numeric' => 'يجب ادخال رقم الهوية بالأرقام!',
                     'ID_NO.digits' => 'رقم الهوية تحتوي على 9 ارقام!',
@@ -158,12 +157,12 @@ class EmployeeController extends Controller
                     'password' => $request->password
                 ];
 
-                \Mail::to($request->email)->send(new \App\Mail\RegisterUserMail($details));
+//                \Mail::to($request->email)->send(new \App\Mail\RegisterUserMail($details));
             }
 
             if(isset($request->image)){
                 $imageName = Str::random(32) . "." . $request->image->getClientOriginalExtension();
-                $user->image = 'https://testing.pal-lady.com/public/storage/app/employees' . $imageName;
+                $user->image = 'https://testing.pal-lady.com/storage/app/public/employees' . $imageName;
                 Storage::disk('public')->put('employees/' . $imageName, file_get_contents($request->image));
             }
 
