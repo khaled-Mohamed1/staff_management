@@ -83,7 +83,9 @@ class EmployeeController extends Controller
                 'job' => $request->job,
                 'image' => 'https://testing.pal-lady.com/storage/app/public/employees/' . $imageName ,
             ]);
-            Storage::disk('public')->put('employees/' . $imageName, file_get_contents($request->image));
+            if ($request->hasFile('image')) {
+                Storage::disk('public')->put('employees/' . $imageName, file_get_contents($request->image));
+            }
 
             $user->assignRole(2);
 
@@ -160,7 +162,7 @@ class EmployeeController extends Controller
 //                \Mail::to($request->email)->send(new \App\Mail\RegisterUserMail($details));
             }
 
-            if(isset($request->image)){
+            if ($request->hasFile('image')) {
                 $imageName = Str::random(32) . "." . $request->image->getClientOriginalExtension();
                 $user->image = 'https://testing.pal-lady.com/storage/app/public/employees/' . $imageName;
                 Storage::disk('public')->put('employees/' . $imageName, file_get_contents($request->image));
