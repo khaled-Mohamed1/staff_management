@@ -81,7 +81,7 @@ class EmployeeController extends Controller
                 'phone_NO' => $request->phone_NO,
                 'role_id' => '2',
                 'job' => $request->job,
-                'image' => 'https://testing.pal-lady.com/storage/app/public/employees' . $imageName ,
+                'image' => 'https://testing.pal-lady.com/storage/app/public/employees/' . $imageName ,
             ]);
             Storage::disk('public')->put('employees/' . $imageName, file_get_contents($request->image));
 
@@ -162,7 +162,7 @@ class EmployeeController extends Controller
 
             if(isset($request->image)){
                 $imageName = Str::random(32) . "." . $request->image->getClientOriginalExtension();
-                $user->image = 'https://testing.pal-lady.com/storage/app/public/employees' . $imageName;
+                $user->image = 'https://testing.pal-lady.com/storage/app/public/employees/' . $imageName;
                 Storage::disk('public')->put('employees/' . $imageName, file_get_contents($request->image));
             }
 
