@@ -58,8 +58,6 @@ class EmployeeController extends Controller
                     'phone_NO.digits' => 'رقم الجوال تحتوي على 9 ارقام',
                     'job.required' => 'يجب ادخال وظيفة الموظف',
                     'image.required' => 'يجب ادخال صورة الموظف',
-                    'image.image' => 'يجب ادخال بالحقل صورة',
-                    'image.mimes' => 'يجب ادخال نسخة الصورة بالشكل الصحيح',
                 ]
             );
 
