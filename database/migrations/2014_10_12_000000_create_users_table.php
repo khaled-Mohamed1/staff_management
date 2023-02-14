@@ -22,7 +22,8 @@ return new class extends Migration
             $table->tinyInteger('role_id')->default('2');
             $table->string('ID_NO')->nullable();
             $table->string('phone_NO')->nullable();
-            $table->string('section')->nullable();
+            $table->string('job')->nullable();
+            $table->text('image')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -15,6 +15,9 @@ class ConversationResource extends JsonResource
      */
     public function toArray($request): array
     {
+
+        $messages = OneMessageResource::collection($this->messages()->latest()->get());
+
         return [
             "id" => $this->id,
             "user_id" => $this->user_id,
@@ -24,6 +27,7 @@ class ConversationResource extends JsonResource
             "isReadOnly" => $this->isReadOnly,
             "last_time" => $this->last_time,
             "status" => $this->status,
+            "messages" => $messages[0],
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at
         ];
