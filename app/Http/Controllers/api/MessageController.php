@@ -19,13 +19,13 @@ class MessageController extends Controller
 
             //send message to WhatsApp
             $params=array(
-                'token' => 'mu0xczn4xdcr2n69',
+                'token' => 'av1cil01p9exr1l0',
                 'to' => $conversation->chat_ID,
                 'body' => $request->body
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance31797/messages/chat",
+                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/chat",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -48,14 +48,14 @@ class MessageController extends Controller
             //get message from WhatsApp
 
             $params2=array(
-                'token' => 'mu0xczn4xdcr2n69',
+                'token' => 'av1cil01p9exr1l0',
                 'chatId' => $conversation->chat_ID,
                 'limit' => '1'
             );
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance31797/chats/messages?" .http_build_query($params2),
+                CURLOPT_URL => "https://api.ultramsg.com/instance32116/chats/messages?" .http_build_query($params2),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -126,34 +126,30 @@ class MessageController extends Controller
                 ]);
             }
 
-            $conversation->isReadOnly = false;
+            $conversation->isReadOnly = $event['data']['fromMe'];
             $conversation->last_time = $event['data']['time'];
             $conversation->save();
 
-            if($event['data']['type'] == 'chat'){
-                $new_message = Message::create([
-                    'message_id' => $event['data']['id'],
-                    'conversation_id' =>  $conversation->id ?? $createConversation->id,
-                    'from' => $event['data']['from'],
-                    'to' => $event['data']['to'],
-                    'body' => $event['data']['body'],
-                    'fromMe' => $event['data']['fromMe'],
-                    'type' => $event['data']['type'],
-                ]);
-                broadcast(new SendMessage($new_message));
+            if($event['event_type'] = 'message_create' && $event['data']['ack'] == 'server') {
+                $user = 1;
             }else{
-                $new_message = Message::create([
-                    'message_id' => $event['data']['id'],
-                    'conversation_id' =>  $conversation->id ?? $createConversation->id,
-                    'from' => $event['data']['from'],
-                    'to' => $event['data']['to'],
-                    'body' => $event['data']['body'],
-                    'media' => $event['data']['media'],
-                    'fromMe' => $event['data']['fromMe'],
-                    'type' => $event['data']['type'],
-                ]);
-                broadcast(new SendMessage($new_message));
+                $user = auth()->user()->id;
             }
+
+            $new_message = Message::create([
+                'message_id' => $event['data']['id'],
+                'user_id' => $user,
+                'conversation_id' =>  $conversation->id ?? $createConversation->id,
+                'from' => $event['data']['from'],
+                'to' => $event['data']['to'],
+                'body' => $event['data']['body'],
+                'media' => $event['data']['media'],
+                'fromMe' => $event['data']['fromMe'],
+                'type' => $event['data']['type'],
+            ]);
+
+            broadcast(new SendMessage($new_message));
+
         }
 
     }
