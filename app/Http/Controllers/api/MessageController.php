@@ -124,11 +124,13 @@ class MessageController extends Controller
                     'isReadOnly' => false,
                     'last_time' => $event['data']['time']
                 ]);
+            }else{
+                $conversation->isReadOnly = $event['data']['fromMe'];
+                $conversation->last_time = $event['data']['time'];
+                $conversation->save();
             }
 
-            $conversation->isReadOnly = $event['data']['fromMe'];
-            $conversation->last_time = $event['data']['time'];
-            $conversation->save();
+
 
             if($event['event_type'] = 'message_create' && $event['data']['ack'] == 'server') {
                 $user = 1;
