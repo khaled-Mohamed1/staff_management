@@ -126,6 +126,10 @@ class MessageController extends Controller
                 ]);
             }
 
+            $conversation->isReadOnly = false;
+            $conversation->last_time = $event['data']['time'];
+            $conversation->save();
+
             if($event['data']['type'] == 'chat'){
                 $new_message = Message::create([
                     'message_id' => $event['data']['id'],
