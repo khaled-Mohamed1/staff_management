@@ -115,7 +115,11 @@ class MessageController extends Controller
             $data =json_encode($event)."\n";
             file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
 
-            $conversation = Conversation::where('chat_ID',$event['data']['from'])->first();
+            if($event['event_type'] == 'message_received'){
+                $conversation = Conversation::where('chat_ID',$event['data']['from'])->first();
+            }else{
+                $conversation = Conversation::where('chat_ID',$event['data']['to'])->first();
+            }
 
             if(!$conversation){
                 $createConversation = Conversation::create([
