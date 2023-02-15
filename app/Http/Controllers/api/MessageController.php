@@ -138,13 +138,11 @@ class MessageController extends Controller
 
             if($event['event_type'] = 'message_create' && $event['data']['ack'] == 'server') {
                 $user = 1;
-            }else{
-                $user = auth()->user()->id;
             }
 
             $new_message = Message::create([
                 'message_id' => $event['data']['id'],
-                'user_id' => $user,
+                'user_id' => $user ?? null,
                 'conversation_id' =>  $conversation->id ?? $createConversation->id,
                 'from' => $event['data']['from'],
                 'to' => $event['data']['to'],
