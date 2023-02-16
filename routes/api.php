@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login',[AuthController::class, 'login']);
 Route::post('webhook', [MessageController::class, 'webhook']);
+Route::get('pusher', [AuthController::class, 'pusher']);
 
 Route::group([
 
@@ -56,6 +57,7 @@ Route::group([
         Route::post('chats', [ConversationController::class, 'index']);
         Route::post('show', [ConversationController::class, 'show']);
         Route::post('update', [ConversationController::class, 'update']);
+        Route::post('read', [ConversationController::class, 'read']);
 
     });
 
