@@ -282,8 +282,8 @@ class MessageController extends Controller
             $params=array(
                 'token' => 'av1cil01p9exr1l0',
                 'to' => $conversation->chat_ID,
-                'video' => $videoName,
-                'document' => $path,
+                'video' => $path,
+                'caption' => $request->caption,
             );
 
             $curl = curl_init();
