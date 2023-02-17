@@ -136,7 +136,7 @@ class MessageController extends Controller
                 'token' => 'av1cil01p9exr1l0',
                 'to' => $conversation->chat_ID,
                 'image' => $path,
-                'body' => $request->body
+                'caption' => $request->caption
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
