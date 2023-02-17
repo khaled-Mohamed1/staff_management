@@ -140,7 +140,7 @@ class MessageController extends Controller
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/chat",
+                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/image",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
