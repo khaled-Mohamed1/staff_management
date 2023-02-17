@@ -195,7 +195,7 @@ class MessageController extends Controller
 
             // Validate the request data
             $this->validate($request, [
-                'document' => 'file|mimes:zip,xlsx,csv,txt,pptx,docx|max:32768',
+                'document' => 'file|mimes:zip,xlsx,csv,txt,pptx,docx,pdf|max:32768',
             ]);
 
             $documentName = Str::random(16) . "." . $request->document->getClientOriginalExtension();
