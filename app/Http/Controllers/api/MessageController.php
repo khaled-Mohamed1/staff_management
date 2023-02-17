@@ -198,7 +198,7 @@ class MessageController extends Controller
                 'document' => 'file|mimes:zip,xlsx,csv,txt,pptx,docx,pdf|max:32768',
             ]);
 
-            $originalName = $request->document->getClientOriginalName() . "." . $request->document->getClientOriginalExtension();
+            $originalName = $request->document->getClientOriginalName();
 
             $documentName = Str::random(16) . "." . $request->document->getClientOriginalExtension();
 
