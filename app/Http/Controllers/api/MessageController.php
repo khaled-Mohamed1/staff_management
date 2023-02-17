@@ -188,6 +188,71 @@ class MessageController extends Controller
         }
     }
 
+    public function sendDocument(Request $request): \Illuminate\Http\JsonResponse
+    {
+
+        try {
+
+            // Validate the request data
+            $this->validate($request, [
+                'document' => 'file|mimes:zip,xlsx,csv,txt,pptx,docx|max:32768',
+            ]);
+
+            $documentName = Str::random(16) . "." . $request->document->getClientOriginalExtension();
+
+            // If an image was uploaded, store it in the file system or cloud storage
+            if ($request->hasFile('document')) {
+                Storage::disk('public')->put('documents/' . $documentName, file_get_contents($request->document));
+            }
+
+            $path = 'https://testing.pal-lady.com/storage/app/public/documents/' . $documentName;
+
+
+            $conversation = Conversation::find($request->conversation_id);
+
+            //send message to WhatsApp
+            $params=array(
+                'token' => 'av1cil01p9exr1l0',
+                'to' => $conversation->chat_ID,
+                'filename' => $documentName,
+                'document' => $path,
+                'caption' => $request->caption
+            );
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/document",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => http_build_query($params),
+                CURLOPT_HTTPHEADER => array(
+                    "content-type: application/x-www-form-urlencoded"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            return response()->json([
+                'status' => true,
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Return Json Response
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function webhook(){
         $data = file_get_contents("php://input");
