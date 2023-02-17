@@ -137,7 +137,7 @@ class MessageController extends Controller
 
             $audioName = Str::random(16) . "." . $request->audio->getClientOriginalExtension();
 
-            // If an audio was uploaded, store it in the file system or cloud storage
+            // If a video was uploaded, store it in the file system or cloud storage
             if ($request->hasFile('audio')) {
                 Storage::disk('public')->put('audio/' . $audioName, file_get_contents($request->audio));
             }
@@ -153,6 +153,7 @@ class MessageController extends Controller
                 'to' => $conversation->chat_ID,
                 'audio' => $path,
             );
+
             $curl = curl_init();
             curl_setopt_array($curl, array(
                 CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/voice",
