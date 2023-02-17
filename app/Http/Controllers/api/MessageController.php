@@ -48,54 +48,6 @@ class MessageController extends Controller
 
             curl_close($curl);
 
-            //get message from WhatsApp
-
-            $params2=array(
-                'token' => 'av1cil01p9exr1l0',
-                'chatId' => $conversation->chat_ID,
-                'limit' => '1'
-            );
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32116/chats/messages?" .http_build_query($params2),
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "GET",
-                CURLOPT_HTTPHEADER => array(
-                    "content-type: application/x-www-form-urlencoded"
-                ),
-            ));
-
-            $response2 = curl_exec($curl);
-            $err = curl_error($curl);
-
-            curl_close($curl);
-
-            $message = json_decode($response2,true);
-
-            //save message in our database
-            $new_message = Message::create([
-                'user_id' => auth()->user()->id,
-                'message_id' => $message[0]['id'],
-                'conversation_id' =>  $conversation->id,
-                'from' => $message[0]['from'],
-                'to' => $message[0]['to'],
-                'body' => $message[0]['body'],
-                'fromMe' => $message[0]['fromMe'],
-                'type' => $message[0]['type'],
-            ]);
-
-            $conversation->update([
-                'isReadOnly' => true,
-                'last_time' => $message[0]['timestamp']
-            ]);
-
-            broadcast(new SendMessage($new_message));
-
             return response()->json([
                 'status' => true,
             ], 200);
