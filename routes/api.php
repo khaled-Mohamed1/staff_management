@@ -64,6 +64,7 @@ Route::group([
     Route::prefix('messages')->group(function () {
 
         Route::post('send_message', [MessageController::class, 'sendMessage']);
+        Route::post('send_image', [MessageController::class, 'sendImage']);
 
     });
 });

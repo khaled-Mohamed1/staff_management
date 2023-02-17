@@ -74,10 +74,10 @@ class AuthController extends Controller
         try {
 
             $pusher = [
-                'PUSHER_APP_ID' => env('PUSHER_APP_ID'),
-                'PUSHER_APP_KEY' => env('PUSHER_APP_KEY'),
-                'PUSHER_APP_SECRET' => env('PUSHER_APP_SECRET'),
-                'PUSHER_APP_CLUSTER' => env('PUSHER_APP_CLUSTER'),
+                'PUSHER_APP_ID' => '1551946',
+                'PUSHER_APP_KEY' => 'baba382db1e49c335622',
+                'PUSHER_APP_SECRET' => '138b68841065f19ef521',
+                'PUSHER_APP_CLUSTER' => 'mt1',
             ];
 
             $event = [
