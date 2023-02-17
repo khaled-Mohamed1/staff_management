@@ -135,7 +135,7 @@ class MessageController extends Controller
                 'audio' => 'file|max:16384',
             ]);
 
-            $audioName = Str::random(16) . "." . $request->image->getClientOriginalExtension();
+            $audioName = Str::random(16) . "." . $request->audio->getClientOriginalExtension();
 
             // If an audio was uploaded, store it in the file system or cloud storage
             if ($request->hasFile('audio')) {
