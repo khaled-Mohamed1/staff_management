@@ -67,6 +67,7 @@ Route::group([
         Route::post('send_image', [MessageController::class, 'sendImage']);
         Route::post('send_voice', [MessageController::class, 'sendVoice']);
         Route::post('send_document', [MessageController::class, 'sendDocument']);
+        Route::post('send_video', [MessageController::class, 'sendVideo']);
 
     });
 });
