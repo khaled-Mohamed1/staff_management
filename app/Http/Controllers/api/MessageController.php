@@ -459,14 +459,11 @@ class MessageController extends Controller
                 'type' => $event['data']['type'],
             ]);
 
-
             if(!$conversation) {
-                $con = Conversation::find($createConversation->id);
-                broadcast(new Conversation($con));
+                broadcast(new Conversation($createConversation->id));
             }
 
-            $mes = Message::find($new_message);
-            broadcast(new SendMessage($mes));
+//            broadcast(new SendMessage($new_message));
 
         }
 

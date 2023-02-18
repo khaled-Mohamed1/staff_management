@@ -14,16 +14,16 @@ class SendMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $mes;
+    public $new_message;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($mes)
+    public function __construct($new_message)
     {
-        $this->mes = $mes;
+        $this->new_message = $new_message;
     }
 
     public function broadcastAs(): string
@@ -34,7 +34,7 @@ class SendMessage implements ShouldBroadcast
     public function  broadcastWith(): array
     {
         return [
-            'message'=>  new OneMessageResource($this->mes),
+            'message'=>  new OneMessageResource($this->new_message),
         ];
     }
 
