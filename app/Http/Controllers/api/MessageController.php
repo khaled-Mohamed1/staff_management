@@ -436,6 +436,8 @@ class MessageController extends Controller
                     'isReadOnly' => false,
                     'last_time' => $event['data']['time']
                 ]);
+
+                broadcast(new Conversation($createConversation));
             }else{
                 $conversation->isReadOnly = $event['data']['fromMe'];
                 $conversation->last_time = $event['data']['time'];
