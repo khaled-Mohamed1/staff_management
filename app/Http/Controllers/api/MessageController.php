@@ -4,7 +4,6 @@ namespace App\Http\Controllers\api;
 
 use App\Events\Message\SendMessage;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ConversationResource;
 use App\Models\Conversation;
 use App\Models\Message;
 use Illuminate\Http\Request;
@@ -22,13 +21,13 @@ class MessageController extends Controller
 
             //send message to WhatsApp
             $params=array(
-                'token' => 'av1cil01p9exr1l0',
+                'token' => 'ioh2xj5b7nu53gmb',
                 'to' => $conversation->chat_ID,
                 'body' => $request->body
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/chat",
+                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/chat",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -85,14 +84,14 @@ class MessageController extends Controller
 
             //send message to WhatsApp
             $params=array(
-                'token' => 'av1cil01p9exr1l0',
+                'token' => 'ioh2xj5b7nu53gmb',
                 'to' => $conversation->chat_ID,
                 'image' => $path,
                 'caption' => $request->caption
             );
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/image",
+                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/image",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -149,14 +148,14 @@ class MessageController extends Controller
 
             //send message to WhatsApp
             $params=array(
-                'token' => 'av1cil01p9exr1l0',
+                'token' => 'ioh2xj5b7nu53gmb',
                 'to' => $conversation->chat_ID,
                 'audio' => $path,
             );
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/voice",
+                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/voice",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -213,14 +212,14 @@ class MessageController extends Controller
 
             //send message to WhatsApp
             $params=array(
-                'token' => 'av1cil01p9exr1l0',
+                'token' => 'ioh2xj5b7nu53gmb',
                 'to' => $conversation->chat_ID,
                 'audio' => $path,
             );
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/audio",
+                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/audio",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -279,7 +278,7 @@ class MessageController extends Controller
 
             //send message to WhatsApp
             $params=array(
-                'token' => 'av1cil01p9exr1l0',
+                'token' => 'ioh2xj5b7nu53gmb',
                 'to' => $conversation->chat_ID,
                 'filename' => $originalName,
                 'document' => $path,
@@ -288,7 +287,7 @@ class MessageController extends Controller
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/document",
+                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/document",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -345,7 +344,7 @@ class MessageController extends Controller
 
             //send message to WhatsApp
             $params=array(
-                'token' => 'av1cil01p9exr1l0',
+                'token' => 'ioh2xj5b7nu53gmb',
                 'to' => $conversation->chat_ID,
                 'video' => $path,
                 'caption' => $request->caption,
@@ -353,7 +352,7 @@ class MessageController extends Controller
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32116/messages/video",
+                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/video",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -419,6 +418,8 @@ class MessageController extends Controller
             if($event['event_type'] = 'message_create' && $event['data']['ack'] == 'server') {
                 $user = 1;
             }
+
+            if($event['data']['type'] == 'document'){}
 
             $new_message = Message::create([
                 'message_id' => $event['data']['id'],
