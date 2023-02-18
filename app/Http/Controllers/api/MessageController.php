@@ -459,11 +459,11 @@ class MessageController extends Controller
                 'type' => $event['data']['type'],
             ]);
 
-            if(!$conversation) {
-                broadcast(new Conversation($createConversation->id));
-            }
+//            if(!$conversation) {
+//                broadcast(new Conversation($createConversation));
+//            }
 
-//            broadcast(new SendMessage($new_message));
+            broadcast(new SendMessage($new_message));
 
         }
 

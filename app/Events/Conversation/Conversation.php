@@ -25,7 +25,7 @@ class Conversation implements ShouldBroadcastNow
      */
     public function __construct($createConversation)
     {
-        $this->createConversation = \App\Models\Conversation::find($createConversation);
+        $this->createConversation = $createConversation;
     }
 
     public function broadcastAs(): string
