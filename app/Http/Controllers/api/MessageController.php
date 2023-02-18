@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Events\Conversation\ConversationCreate;
 use App\Events\Message\SendMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
@@ -460,8 +461,7 @@ class MessageController extends Controller
             ]);
 
             if(!$conversation) {
-                $con = Conversation::find($createConversation->id);
-                broadcast(new Conversation($createConversation->toArray()));
+                broadcast(new ConversationCreate($createConversation));
             }
 
             broadcast(new SendMessage($new_message));

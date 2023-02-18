@@ -9,11 +9,11 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Conversation implements ShouldBroadcast
+class ConversationCreate implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $con;
+    public $createConversation;
 
 
     /**
@@ -21,9 +21,9 @@ class Conversation implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($con)
+    public function __construct($createConversation)
     {
-        $this->con = $con;
+        $this->createConversation = $createConversation;
     }
 
     public function broadcastAs(): string
@@ -34,7 +34,7 @@ class Conversation implements ShouldBroadcast
     public function  broadcastWith(): array
     {
         return [
-            'conversation'=>  new ConversationResource($this->con),
+            'conversation'=>  new ConversationResource($this->createConversation),
         ];
     }
 
