@@ -443,12 +443,9 @@ class MessageController extends Controller
                 $conversation->save();
             }
 
-
-
             if($event['event_type'] = 'message_create' && $event['data']['ack'] == 'server') {
                 $user = 1;
             }
-
 
             $new_message = Message::create([
                 'message_id' => $event['data']['id'],
@@ -463,7 +460,7 @@ class MessageController extends Controller
             ]);
 
             if(!$conversation) {
-                broadcast(new Conversation($createConversation));
+                event(new Conversation($createConversation));
             }
 
             broadcast(new SendMessage($new_message));
