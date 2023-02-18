@@ -15,7 +15,7 @@ class Conversation implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $createConversation;
+    public $con;
 
 
     /**
@@ -23,9 +23,9 @@ class Conversation implements ShouldBroadcastNow
      *
      * @return void
      */
-    public function __construct($createConversation)
+    public function __construct($con)
     {
-        $this->createConversation = $createConversation;
+        $this->con = $con;
     }
 
     public function broadcastAs(): string
@@ -36,7 +36,7 @@ class Conversation implements ShouldBroadcastNow
     public function  broadcastWith(): array
     {
         return [
-            'conversation'=>  new ConversationResource($this->createConversation),
+            'conversation'=>  new ConversationResource($this->con),
         ];
     }
 
