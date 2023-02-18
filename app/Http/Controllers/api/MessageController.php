@@ -437,7 +437,6 @@ class MessageController extends Controller
                     'last_time' => $event['data']['time']
                 ]);
 
-                broadcast(new Conversation($createConversation));
             }else{
                 $conversation->isReadOnly = $event['data']['fromMe'];
                 $conversation->last_time = $event['data']['time'];
@@ -464,6 +463,7 @@ class MessageController extends Controller
                 'type' => $event['data']['type'],
             ]);
 
+            broadcast(new Conversation($createConversation));
             broadcast(new SendMessage($new_message));
 
         }
