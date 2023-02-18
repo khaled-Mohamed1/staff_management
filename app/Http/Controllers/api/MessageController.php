@@ -461,7 +461,7 @@ class MessageController extends Controller
 
             if(!$conversation) {
                 $con = Conversation::find($createConversation->id);
-                broadcast(new Conversation($createConversation));
+                broadcast(new Conversation($createConversation->toArray()));
             }
 
             broadcast(new SendMessage($new_message));
