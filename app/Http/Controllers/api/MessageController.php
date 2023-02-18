@@ -401,9 +401,38 @@ class MessageController extends Controller
             }
 
             if(!$conversation){
+
+                //get image of the user
+                $params=array(
+                    'token' => 'ioh2xj5b7nu53gmb',
+                    'chatId' => $event['data']['from']
+                );
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => "https://api.ultramsg.com/instance32418/contacts/image?" .http_build_query($params),
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => "GET",
+                    CURLOPT_HTTPHEADER => array(
+                        "content-type: application/x-www-form-urlencoded"
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+                $err = curl_error($curl);
+
+                curl_close($curl);
+
+                $image = json_decode($response, true);
+
                 $createConversation = Conversation::create([
                     'chat_ID' =>  $event['data']['from'],
                     'name' => $event['data']['pushname'] ?? 'guest',
+                    'image' => $image['success'],
                     'isReadOnly' => false,
                     'last_time' => $event['data']['time']
                 ]);
