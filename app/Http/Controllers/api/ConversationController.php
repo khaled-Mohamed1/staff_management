@@ -49,7 +49,7 @@ class ConversationController extends Controller
 
             $conversation = Conversation::find($request->conversation_id);
 
-            $cov_messages = Message::where('conversation_id', $conversation->id)->latest()->paginate();
+            $cov_messages = Message::where('conversation_id', $conversation->id)->paginate();
 
             return response()->json([
                 'status' => true,
