@@ -449,7 +449,6 @@ class MessageController extends Controller
                 $user = 1;
             }
 
-            if($event['data']['type'] == 'document'){}
 
             $new_message = Message::create([
                 'message_id' => $event['data']['id'],
