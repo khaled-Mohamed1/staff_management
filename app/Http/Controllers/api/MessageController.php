@@ -130,7 +130,7 @@ class MessageController extends Controller
 
         try {
 
-            // Validate the request data
+            // Validate the request datax
             $this->validate($request, [
                 'audio' => 'file|max:16384',
             ]);
@@ -196,7 +196,7 @@ class MessageController extends Controller
 
             // Validate the request data
             $this->validate($request, [
-                'audio' => 'file|mimes:jpeg,png,jpg,gif,svg|max:16384',
+                'audio' => 'file|mimes:mp3,aac,ogg|max:16384',
             ]);
 
             $audioName = Str::random(16) . "." . $request->audio->getClientOriginalExtension();
