@@ -36,7 +36,7 @@ class Conversation implements ShouldBroadcastNow
     public function  broadcastWith(): array
     {
         return [
-            'conversation'=>  $this->con,
+            'conversation'=>  new ConversationResource($this->con),
         ];
     }
 
