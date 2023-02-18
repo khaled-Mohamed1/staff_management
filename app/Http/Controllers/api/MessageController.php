@@ -460,7 +460,7 @@ class MessageController extends Controller
             ]);
 
             if(!$conversation) {
-                event(new Conversation($createConversation));
+                broadcast(new Conversation($createConversation));
             }
 
             broadcast(new SendMessage($new_message));
