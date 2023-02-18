@@ -5,9 +5,7 @@ namespace App\Events\Conversation;
 use App\Http\Resources\ConversationResource;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -36,7 +34,7 @@ class Conversation implements ShouldBroadcast
     public function  broadcastWith(): array
     {
         return [
-            'conversation'=>  $this->con,
+            'conversation'=>  new ConversationResource($this->con),
         ];
     }
 
