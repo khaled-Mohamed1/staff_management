@@ -403,7 +403,7 @@ class MessageController extends Controller
             if(!$conversation){
                 $createConversation = Conversation::create([
                     'chat_ID' =>  $event['data']['from'],
-                    'name' => $event['data']['pushname'],
+                    'name' => $event['data']['pushname'] ?? 'guest',
                     'isReadOnly' => false,
                     'last_time' => $event['data']['time']
                 ]);
