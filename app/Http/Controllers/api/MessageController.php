@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Events\Conversation\ConversationCreate;
+use App\Events\Conversation\ConversationHide;
 use App\Events\Message\SendMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
@@ -19,9 +20,15 @@ class MessageController extends Controller
         try {
 
             $conversation = Conversation::find($request->conversation_id);
-            $conversation->user_id = auth()->user()->id;
-            $conversation->status = 'مستمرة';
-            $conversation->save();
+            if($conversation->user_id == null){
+                $conversation->user_id = auth()->user()->id;
+                $conversation->status = 'مستمرة';
+                $conversation->save();
+
+                broadcast(new ConversationHide($conversation));
+
+            }
+
 
             //send message to WhatsApp
             $params=array(
@@ -421,10 +428,16 @@ class MessageController extends Controller
 
             if(!$conversation){
 
+                if($event['event_type'] == 'message_received'){
+                    $us = $event['data']['from'];
+                }else{
+                    $us = $event['data']['to'];
+                }
+
                 //get image of the user
                 $params=array(
                     'token' => 'ioh2xj5b7nu53gmb',
-                    'chatId' => $event['data']['from']
+                    'chatId' => $us
                 );
                 $curl = curl_init();
 
@@ -459,10 +472,6 @@ class MessageController extends Controller
             }else{
                 $conversation->isReadOnly = $event['data']['fromMe'];
                 $conversation->last_time = $event['data']['time'];
-                if ($event['event_type'] == 'message_create') {
-                    $conversation->user_id = auth()->user()->id ?? 1;
-                    $conversation->status = 'مستمرة';
-                }
                 $conversation->save();
             }
 
