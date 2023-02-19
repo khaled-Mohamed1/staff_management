@@ -442,6 +442,7 @@ class MessageController extends Controller
                 $conversation->user_id = auth()->user()->id;
                 $conversation->isReadOnly = $event['data']['fromMe'];
                 $conversation->last_time = $event['data']['time'];
+                $conversation->status = 'مستمرة';
                 $conversation->save();
             }
 
