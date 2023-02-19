@@ -464,7 +464,7 @@ class MessageController extends Controller
                 $createConversation = Conversation::create([
                     'chat_ID' =>  $event['data']['from'],
                     'name' => $event['data']['pushname'] ?? 'guest',
-                    'image' => $image['success'],
+                    'image' => $image['success'] ?? null,
                     'isReadOnly' => false,
                     'last_time' => $event['data']['time']
                 ]);
