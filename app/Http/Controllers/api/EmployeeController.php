@@ -186,7 +186,7 @@ class EmployeeController extends Controller
     public function show(Request $request){
         try {
 
-            $user = User::find($request->user_id);
+            $user = User::with('conversations')->find($request->user_id);
 
 
             return response()->json([

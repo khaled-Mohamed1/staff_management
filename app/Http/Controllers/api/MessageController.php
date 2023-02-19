@@ -439,6 +439,7 @@ class MessageController extends Controller
                 ]);
 
             }else{
+                $conversation->user_id = auth()->user()->id;
                 $conversation->isReadOnly = $event['data']['fromMe'];
                 $conversation->last_time = $event['data']['time'];
                 $conversation->save();
@@ -450,7 +451,7 @@ class MessageController extends Controller
 
             $new_message = Message::create([
                 'message_id' => $event['data']['id'],
-                'user_id' => $user ?? null,
+                'user_id' => $user ?? auth()->user()->id,
                 'conversation_id' =>  $conversation->id ?? $createConversation->id,
                 'from' => $event['data']['from'],
                 'to' => $event['data']['to'],
