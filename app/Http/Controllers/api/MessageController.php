@@ -19,6 +19,9 @@ class MessageController extends Controller
         try {
 
             $conversation = Conversation::find($request->conversation_id);
+            $conversation->user_id = auth()->user()->id;
+            $conversation->status = 'مستمرة';
+            $conversation->save();
 
             //send message to WhatsApp
             $params=array(
@@ -82,6 +85,9 @@ class MessageController extends Controller
 
 
             $conversation = Conversation::find($request->conversation_id);
+            $conversation->user_id = auth()->user()->id;
+            $conversation->status = 'مستمرة';
+            $conversation->save();
 
             //send message to WhatsApp
             $params=array(
@@ -146,6 +152,9 @@ class MessageController extends Controller
 
 
             $conversation = Conversation::find($request->conversation_id);
+            $conversation->user_id = auth()->user()->id;
+            $conversation->status = 'مستمرة';
+            $conversation->save();
 
             //send message to WhatsApp
             $params=array(
@@ -210,6 +219,9 @@ class MessageController extends Controller
 
 
             $conversation = Conversation::find($request->conversation_id);
+            $conversation->user_id = auth()->user()->id;
+            $conversation->status = 'مستمرة';
+            $conversation->save();
 
             //send message to WhatsApp
             $params=array(
@@ -276,6 +288,9 @@ class MessageController extends Controller
 
 
             $conversation = Conversation::find($request->conversation_id);
+            $conversation->user_id = auth()->user()->id;
+            $conversation->status = 'مستمرة';
+            $conversation->save();
 
             //send message to WhatsApp
             $params=array(
@@ -342,6 +357,9 @@ class MessageController extends Controller
 
 
             $conversation = Conversation::find($request->conversation_id);
+            $conversation->user_id = auth()->user()->id;
+            $conversation->status = 'مستمرة';
+            $conversation->save();
 
             //send message to WhatsApp
             $params=array(
