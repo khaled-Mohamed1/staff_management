@@ -186,8 +186,10 @@ class EmployeeController extends Controller
     public function show(Request $request){
         try {
 
-            $user = User::with(['conversations' => function ($query){
-                $query->with('messages')->latest()->limit(1);
+            $user = User::with(['conversations' => function ($query) {
+                $query->with(['messages' => function ($query) {
+                    $query->latest()->first();
+                }]);
             }])->find($request->user_id);
 
             return response()->json([
