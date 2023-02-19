@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => 60,
 
     'personal_access_tokens' => [
         'lifetime' => 60, // lifetime set to 1 hour
