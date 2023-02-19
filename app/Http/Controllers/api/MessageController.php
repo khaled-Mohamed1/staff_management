@@ -51,6 +51,10 @@ class MessageController extends Controller
 
             curl_close($curl);
 
+            $message = Message::all()->last();
+            $message->user_id = auth()->user()->id;
+            $message->save();
+
             return response()->json([
                 'status' => true,
             ], 200);
