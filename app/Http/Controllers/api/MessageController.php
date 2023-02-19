@@ -439,20 +439,22 @@ class MessageController extends Controller
                 ]);
 
             }else{
-                $conversation->user_id = auth()->user()->id;
                 $conversation->isReadOnly = $event['data']['fromMe'];
                 $conversation->last_time = $event['data']['time'];
-                $conversation->status = 'مستمرة';
+                if ($event['event_type'] == 'message_create') {
+                    $conversation->user_id = auth()->user()->id ? auth()->user()->id : 1;
+                    $conversation->status = 'مستمرة';
+                }
                 $conversation->save();
             }
 
-            if($event['event_type'] = 'message_create' && $event['data']['ack'] == 'server') {
+            if($event['event_type'] == 'message_create' && $event['data']['ack'] == 'server') {
                 $user = 1;
             }
 
             $new_message = Message::create([
                 'message_id' => $event['data']['id'],
-                'user_id' => $user ?? auth()->user()->id,
+                'user_id' => $user ?? null,
                 'conversation_id' =>  $conversation->id ?? $createConversation->id,
                 'from' => $event['data']['from'],
                 'to' => $event['data']['to'],
