@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('login',[AuthController::class, 'login']);
+Route::post('webhook', [MessageController::class, 'webhook']);
 Route::get('pusher', [AuthController::class, 'pusher']);
 
 Route::group([
@@ -31,7 +32,6 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
-    Route::post('webhook', [MessageController::class, 'webhook']);
 
     Route::post('logout', [AuthController::class, 'logout']);
 
