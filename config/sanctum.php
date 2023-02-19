@@ -48,6 +48,9 @@ return [
 
     'expiration' => null,
 
+    'personal_access_tokens' => [
+        'lifetime' => 60, // lifetime set to 1 hour
+    ],
     /*
     |--------------------------------------------------------------------------
     | Sanctum Middleware
