@@ -20,13 +20,8 @@ class ConversationController extends Controller
             if(auth()->user()->role_id == 1){
                 $conversations = Conversation::orderBy('last_time', 'desc')->get();
             }elseif (auth()->user()->role_id == 2){
-                $conversations = Conversation::where(function ($query){
-                    $query->where('user_id', auth()->user()->id)
-                        ->orWhere('user_id', null);
-                })->where(function ($query){
-                    $query->where('status', 'انتظار')
-                        ->orWhere('status', 'مستمر');
-                })->orderBy('last_time', 'desc')->get();
+                $conversations = Conversation::where('user_id', auth()->user()->id)
+                        ->orWhere('user_id', null)->orderBy('last_time', 'desc')->get();
             }
 
             return response()->json([
