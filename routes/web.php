@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\MessageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+//ngrok
+Route::get('/send-message', [MessageController::class, 'sendMessageTwo']);
+Route::get('/whatsapp-webhook', [MessageController::class, 'verifyWebhook']);
+

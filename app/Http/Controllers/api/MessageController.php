@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -499,6 +500,71 @@ class MessageController extends Controller
 
         }
 
+    }
+
+    public function sendMessageTwo(){
+        try{
+
+            $token = 'EAAIK8c4aojYBAOWaJhwgsbbz9W6RIHA94v0OJWyZCpwFSpGZC2Lf5BPCB1VTUMvLr8RWIb6yhaE3ADbAyFwDcxK9EgByXoWx3Bpu9wEN7cw9XrrXe3SWmsllnB8ul6exT1xBOZCsWyL8q6w7ZCZACrc1kXdt7ruaJOGIF1gPRM11qMhsCZAh5yhs88RzR4ZC4faMQAGWW27WMj0gMK8ZABIq';
+
+            $phoneId = '103217839375858';
+            $version = 'v15.0';
+            $payload = [
+              'messaging_product' => 'whatsapp',
+              'to' => '970567494761',
+              'type' => 'template',
+              "template"=>[
+                  "name" => "hello_world",
+                  "language" => [
+                      "code" => "en_US"
+                  ]
+              ]
+            ];
+
+            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $payload)->throw()->json();
+
+            return response()->json([
+               'success' => true,
+               'data' => $message
+            ],200);
+
+        } catch (\Exception $e) {
+            // Return Json Response
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function verifyWebhook(Request $request){
+        try {
+
+            $verifyToken = 'wibblewebhook4!';
+            $query = $request->query();
+
+            $mode = $query['hub_mode'];
+            $token = $query['hub_verify_token'];
+            $challenge = $query['hub_challenge'];
+
+            if($mode && $token){
+                if($mode === 'subscribe' && $token == $verifyToken){
+                    return response($challenge, 200)->header(
+                        'Content-Type', 'text/plain'
+                    );
+                }
+            }
+
+            throw new \Exception('Invalid request');
+
+        } catch (\Exception $e) {
+            // Return Json Response
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
 }

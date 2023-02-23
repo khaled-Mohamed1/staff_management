@@ -26,6 +26,10 @@ Route::post('login',[AuthController::class, 'login']);
 Route::post('webhook', [MessageController::class, 'webhook']);
 Route::get('pusher', [AuthController::class, 'pusher']);
 
+//ngrok
+Route::get('send-message', [MessageController::class, 'sendMessageTwo']);
+
+
 Route::group([
 
     'middleware' => ['auth:sanctum'],
