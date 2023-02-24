@@ -538,10 +538,37 @@ class MessageController extends Controller
         }
     }
 
+    public function getUrl(){
+        try{
+
+            $token = 'EAAIK8c4aojYBALcmGhL3jLEEV0MPFYXoKoFtkKAwdtvZAWVM2SIFZApMMmOgZByYpZBnG2zDqOIJaT7jxlMYKpPeZBQMccpZCrFiZCstaZARGp3sLQ9U2Kbm4rwNpikQ8bDZC39Il0TRooPZBlmZC6NnfZCOQmY728hVYSOqTVNGPVW9OcIv3naIqoRHYQidZA3knwCMijSnbBQD2Lqk7YeCyfiZBU';
+
+            $media_id = '753950449645054';
+            $version = 'v15.0';
+            $payload = [
+                'phone_number_id' => '103217839375858',
+            ];
+
+            $url = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
+                $payload)->throw()->json();
+
+            return response()->json([
+                'success' => true,
+                'data' => $url
+            ],200);
+
+        } catch (\Exception $e) {
+            // Return Json Response
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
     public function verifyWebhook(Request $request){
         try {
-
-
 
             $verifyToken = 'wibblewebhook4!';
             $query = $request->query();
@@ -577,17 +604,44 @@ class MessageController extends Controller
             $value = $bodyContent['entry'][0]['changes'][0]['value'];
 
             if(!empty($value['messages'])){
-                if($value['messages'][0]['type'] == 'text'){
-                    $body = $value['messages'][0]['text']['body'];
-                        //Here, you now have event and can process them how you like e.g Add to the database or generate a response
-                        $file = 'log.txt';
-                        $data =json_encode($bodyContent)."\n";
-                        file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
-                }
-            }else{
+
+//                $conversation = Conversation::where('chat_ID',$value['contacts'][0]['wa_jd'])->first();
+//                if(!$conversation) {
+//                    $createConversation = Conversation::create([
+//                        'chat_ID' =>  $value['contacts'][0]['wa-_jd'],
+//                        'name' => $value['contacts'][0]['profile']['name'] ?? 'guest',
+//                        'image' => null,
+//                        'isReadOnly' => false,
+//                        'last_time' => $value['messages'][0]['timestamp']
+//                    ]);
+//                }else{
+//                    $conversation->isReadOnly = false;
+//                    $conversation->last_time = $value['messages'][0]['timestamp'];
+//                    $conversation->save();
+//                }
+//
+//                if($value['messages'][0]['type'] == 'text'){
+//                    $body = $value['messages'][0]['text']['body'];
+//                }
+//
+//                $new_message = Message::create([
+//                    'message_id' => $value['messages'][0]['id'],
+//                    'user_id' => null,
+//                    'conversation_id' =>  $conversation->id ?? $createConversation->id,
+//                    'from' => $value['messages'][0]['from'],
+//                    'to' => $value['metadata']['display_phone_number'],
+//                    'body' => $body,
+//                    'media' => $event['data']['media'],
+//                    'fromMe' => $event['data']['fromMe'],
+//                    'type' => $event['data']['type'],
+//                ]);
+
+
+                //Here, you now have event and can process them how you like e.g Add to the database or generate a response
                 $file = 'log.txt';
                 $data =json_encode($bodyContent)."\n";
                 file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+
             }
 
             return response()->json([
