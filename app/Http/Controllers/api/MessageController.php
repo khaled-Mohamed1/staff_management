@@ -574,7 +574,7 @@ class MessageController extends Controller
             $url_media = 'https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=753950449645054&ext=1677273762&hash=ATuIazCTT9JuX8ZpXhB_F6Utfj_00Tm1BZqn_h_x_DLgeg';
             $version = 'v15.0';
 
-            $download = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$url_media)->throw()->json();
+            $download = Http::withToken($token)->get($url_media)->throw()->json();
 
             return response()->json([
                 'success' => true,
