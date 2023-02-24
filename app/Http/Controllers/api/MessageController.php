@@ -510,15 +510,15 @@ class MessageController extends Controller
             $phoneId = '103217839375858';
             $version = 'v15.0';
             $payload = [
-              'messaging_product' => 'whatsapp',
-              'to' => '970567494761',
-              'type' => 'template',
-              "template"=>[
-                  "name" => "hello_world",
-                  "language" => [
-                      "code" => "en_US"
-                  ]
-              ]
+                'messaging_product' => 'whatsapp',
+                'recipient_type' => 'individual',
+                'to' => '970567494761',
+                'type' => 'text',
+                "text" => [
+                    "preview_url"=> false,
+                    "body"=> "eeewqe"
+                ]
+
             ];
 
             $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
