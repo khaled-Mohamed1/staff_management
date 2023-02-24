@@ -581,12 +581,12 @@ class MessageController extends Controller
                     $body = $value['messages'][0]['text']['body'];
                         //Here, you now have event and can process them how you like e.g Add to the database or generate a response
                         $file = 'log.txt';
-                        $data =json_encode($value)."\n";
+                        $data =json_encode($bodyContent)."\n";
                         file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
                 }
             }else{
                 $file = 'log.txt';
-                $data =json_encode($value)."\n";
+                $data =json_encode($bodyContent)."\n";
                 file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
             }
 
