@@ -566,6 +566,30 @@ class MessageController extends Controller
         }
     }
 
+    public function downloadMedia(){
+        try{
+
+            $token = 'EAAIK8c4aojYBALcmGhL3jLEEV0MPFYXoKoFtkKAwdtvZAWVM2SIFZApMMmOgZByYpZBnG2zDqOIJaT7jxlMYKpPeZBQMccpZCrFiZCstaZARGp3sLQ9U2Kbm4rwNpikQ8bDZC39Il0TRooPZBlmZC6NnfZCOQmY728hVYSOqTVNGPVW9OcIv3naIqoRHYQidZA3knwCMijSnbBQD2Lqk7YeCyfiZBU';
+
+            $url_media = 'https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=753950449645054&ext=1677273762&hash=ATuIazCTT9JuX8ZpXhB_F6Utfj_00Tm1BZqn_h_x_DLgeg';
+            $version = 'v15.0';
+
+            $download = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$url_media)->throw()->json();
+
+            return response()->json([
+                'success' => true,
+                'data' => $download
+            ],200);
+
+        } catch (\Exception $e) {
+            // Return Json Response
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
     public function verifyWebhook(Request $request){
         try {
