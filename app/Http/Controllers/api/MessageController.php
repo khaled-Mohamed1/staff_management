@@ -505,7 +505,7 @@ class MessageController extends Controller
     public function sendMessageTwo(){
         try{
 
-            $token = 'EAAIK8c4aojYBAOWaJhwgsbbz9W6RIHA94v0OJWyZCpwFSpGZC2Lf5BPCB1VTUMvLr8RWIb6yhaE3ADbAyFwDcxK9EgByXoWx3Bpu9wEN7cw9XrrXe3SWmsllnB8ul6exT1xBOZCsWyL8q6w7ZCZACrc1kXdt7ruaJOGIF1gPRM11qMhsCZAh5yhs88RzR4ZC4faMQAGWW27WMj0gMK8ZABIq';
+            $token = 'EAAIK8c4aojYBAAGRKZB6NnKMz6ZANywmCQDbqOdqd1WCQ4ThIitO3o8Ee31nlQevwey6mCKY5XI85nZCDZBUlmmMT13fiBVSnGeoPEulWrVDKWEggzapMc2Xs3qctZAYD8TW7ouC6XqG3q3mjrpV9D4o61aXJyspldFy5WShXb1CmystxOBAwkFDZBUGCJ0kGF8gkIOQRPgim59ssPaJO4';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
