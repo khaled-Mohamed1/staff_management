@@ -580,7 +580,7 @@ class MessageController extends Controller
                 if($value['messages'][0]['type'] == 'text'){
                     $body = $value['messages'][0]['text']['body'];
                     $file = 'log.txt';
-                    file_put_contents($file, $value, FILE_APPEND | LOCK_EX);
+                    file_put_contents($file, $body, FILE_APPEND | LOCK_EX);
                 }
             }
 
