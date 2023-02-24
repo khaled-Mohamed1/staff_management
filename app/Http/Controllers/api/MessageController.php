@@ -524,10 +524,6 @@ class MessageController extends Controller
             $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
             $payload)->throw()->json();
 
-            $file = 'log.txt';
-            $data =json_encode($message)."\n";
-            file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
-
             return response()->json([
                'success' => true,
                'data' => $message
@@ -588,6 +584,9 @@ class MessageController extends Controller
                         $data =json_encode($value)."\n";
                         file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
                 }
+            }else{
+                $file = 'log.txt';
+                file_put_contents($file, 'from me', FILE_APPEND | LOCK_EX);
             }
 
             return response()->json([
