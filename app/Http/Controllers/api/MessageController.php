@@ -586,7 +586,8 @@ class MessageController extends Controller
                 }
             }else{
                 $file = 'log.txt';
-                file_put_contents($file, 'from me', FILE_APPEND | LOCK_EX);
+                $data =json_encode($value)."\n";
+                file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
             }
 
             return response()->json([
