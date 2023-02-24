@@ -569,4 +569,32 @@ class MessageController extends Controller
         }
     }
 
+    public function processWebhook(Request $request){
+        try {
+
+            $bodyContent = json_decode($request->getContent(), true);
+
+            $value = $bodyContent['entry'][0]['changes'][0]['value'];
+
+            if(!empty($value['messages'])){
+                if($value['messages'][0]['type'] == 'text'){
+                    $body = $value['messages'][0]['text']['body'];
+                    $file = 'log.txt';
+                    file_put_contents($file, $body, FILE_APPEND | LOCK_EX);
+                }
+            }
+
+            return response()->json([
+                'success' => true
+            ],200);
+
+        } catch (\Exception $e) {
+            // Return Json Response
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

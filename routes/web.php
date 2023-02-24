@@ -21,4 +21,5 @@ Route::get('/', function () {
 //ngrok
 Route::get('/send-message', [MessageController::class, 'sendMessageTwo']);
 Route::get('/whatsapp-webhook', [MessageController::class, 'verifyWebhook']);
+Route::post('/whatsapp-webhook', [MessageController::class, 'processWebhook']);
 
