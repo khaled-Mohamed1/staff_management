@@ -645,6 +645,10 @@ class MessageController extends Controller
 
                 if($value['messages'][0]['type'] == 'image'){
                     $media_id = $value['messages'][0]['image']['id'];
+                    //Here, you now have event and can process them how you like e.g Add to the database or generate a response
+                    $file = 'log.txt';
+                    $data =json_encode($bodyContent)."\n";
+                    file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
                     $this->getUrl($media_id);
                 }
 
@@ -680,10 +684,7 @@ class MessageController extends Controller
 //                ]);
 
 
-                //Here, you now have event and can process them how you like e.g Add to the database or generate a response
-                $file = 'log.txt';
-                $data =json_encode($bodyContent)."\n";
-                file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+
 
             }
 
