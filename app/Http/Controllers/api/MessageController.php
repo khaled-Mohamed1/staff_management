@@ -541,7 +541,7 @@ class MessageController extends Controller
     public function getUrl(){
         try{
 
-            $token = 'EAAIK8c4aojYBALcmGhL3jLEEV0MPFYXoKoFtkKAwdtvZAWVM2SIFZApMMmOgZByYpZBnG2zDqOIJaT7jxlMYKpPeZBQMccpZCrFiZCstaZARGp3sLQ9U2Kbm4rwNpikQ8bDZC39Il0TRooPZBlmZC6NnfZCOQmY728hVYSOqTVNGPVW9OcIv3naIqoRHYQidZA3knwCMijSnbBQD2Lqk7YeCyfiZBU';
+            $token = 'EAAIK8c4aojYBAPiUhzVwl9LgisKYcUaQx5qgZBJhQGw1BRp3FeJ8yZCMSdbF8j4TrmODaffDpjGDrhSOZAvrZBpkYnwqWgC6wf4FlqT4HGZCN2tv6jB1ev79iYG1QxfYUEgrznEhf0ZAXtqx8l3xb8ZCgCKkEhy9vhzjnGyGTyH8Elqcn3DCJ3o9NYZAS0VA1ZBx8QOwQokxZCt4UcApNJmSmI';
 
             $media_id = '753950449645054';
             $version = 'v15.0';
@@ -569,16 +569,39 @@ class MessageController extends Controller
     public function downloadMedia(){
         try{
 
-            $token = 'EAAIK8c4aojYBALcmGhL3jLEEV0MPFYXoKoFtkKAwdtvZAWVM2SIFZApMMmOgZByYpZBnG2zDqOIJaT7jxlMYKpPeZBQMccpZCrFiZCstaZARGp3sLQ9U2Kbm4rwNpikQ8bDZC39Il0TRooPZBlmZC6NnfZCOQmY728hVYSOqTVNGPVW9OcIv3naIqoRHYQidZA3knwCMijSnbBQD2Lqk7YeCyfiZBU';
+            $token = 'EAAIK8c4aojYBAPiUhzVwl9LgisKYcUaQx5qgZBJhQGw1BRp3FeJ8yZCMSdbF8j4TrmODaffDpjGDrhSOZAvrZBpkYnwqWgC6wf4FlqT4HGZCN2tv6jB1ev79iYG1QxfYUEgrznEhf0ZAXtqx8l3xb8ZCgCKkEhy9vhzjnGyGTyH8Elqcn3DCJ3o9NYZAS0VA1ZBx8QOwQokxZCt4UcApNJmSmI';
 
             $url_media = 'https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=753950449645054&ext=1677273762&hash=ATuIazCTT9JuX8ZpXhB_F6Utfj_00Tm1BZqn_h_x_DLgeg';
             $version = 'v15.0';
 
-            $download = Http::withToken($token)->get($url_media)->throw()->json();
+            $ch = curl_init($url_media);
+
+            $output_filename = 'demo.png';
+            $fp = fopen($output_filename, 'wb');
+
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 400);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch,CURLOPT_CUSTOMREQUEST , "GET");
+            curl_setopt($ch,CURLOPT_ENCODING , "");
+            curl_setopt($ch,CURLOPT_FILE , $fp);
+
+            $headers = [];
+            $headers[]  = "Authorization: Bearer " . $token;
+            $headers[]  = "Accept-Language:en-US,en;q=0.5";
+            $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $raw = curl_exec($ch);
+
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
 
             return response()->json([
                 'success' => true,
-                'data' => $download
+                'data' => $httpcode
             ],200);
 
         } catch (\Exception $e) {
