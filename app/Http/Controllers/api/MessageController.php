@@ -538,12 +538,12 @@ class MessageController extends Controller
         }
     }
 
-    public function getUrl(){
+    public function getUrl($f_media_id){
         try{
 
-            $token = 'EAAIK8c4aojYBAPiUhzVwl9LgisKYcUaQx5qgZBJhQGw1BRp3FeJ8yZCMSdbF8j4TrmODaffDpjGDrhSOZAvrZBpkYnwqWgC6wf4FlqT4HGZCN2tv6jB1ev79iYG1QxfYUEgrznEhf0ZAXtqx8l3xb8ZCgCKkEhy9vhzjnGyGTyH8Elqcn3DCJ3o9NYZAS0VA1ZBx8QOwQokxZCt4UcApNJmSmI';
+            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
 
-            $media_id = '753950449645054';
+            $media_id = $f_media_id;
             $version = 'v15.0';
             $payload = [
                 'phone_number_id' => '103217839375858',
@@ -552,10 +552,8 @@ class MessageController extends Controller
             $url = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
                 $payload)->throw()->json();
 
-            return response()->json([
-                'success' => true,
-                'data' => $url
-            ],200);
+            $this->downloadMediaImage($url);
+
 
         } catch (\Exception $e) {
             // Return Json Response
@@ -566,18 +564,17 @@ class MessageController extends Controller
         }
     }
 
-    public function downloadMediaImage(){
+    public function downloadMediaImage($f_url_media){
         try{
 
-            $token = 'EAAIK8c4aojYBAP6XrXMWZBHon5GLRmZBM6uF3ejZBEYWEJiRsuWappI7tmuhWs4iWRJEaxCo1Rizl2CIcWyYURRpaXqaX2RBQnQ0bvx8hTZBN2i9NcTdqQgOX5OtdpT9AoXdS1PC29rm7KJYPfE8dWhytdvszsh974ma4CpZBI1HjAxzBU8KzZB3yWkZCOFVho9pYsjnwRcP4bzyyQxGqvv';
+            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
 
-            $url_media = 'https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=739359821121837&ext=1677357540&hash=ATtfLZX_BAWYQoJU24xZSoES5JV4C1eQACta84WnFNeYRw';
-            $version = 'v15.0';
+            $url_media = $f_url_media;
 
             $ch = curl_init($url_media);
 
-            $output_filename = 'demo.png';
-            $fp = fopen($output_filename, 'wb');
+            $output_filename =  Str::random(16) . ".png";
+            $fp = fopen('images/'.$output_filename, 'wb');
 
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
@@ -597,11 +594,6 @@ class MessageController extends Controller
 
             $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
-
-            return response()->json([
-                'success' => true,
-                'data' => $httpcode
-            ],200);
 
         } catch (\Exception $e) {
             // Return Json Response
@@ -650,6 +642,11 @@ class MessageController extends Controller
             $value = $bodyContent['entry'][0]['changes'][0]['value'];
 
             if(!empty($value['messages'])){
+
+                if($value['messages'][0]['type'] == 'image'){
+                    $media_id = $value['messages'][0]['image']['id'];
+                    $this->getUrl($media_id);
+                }
 
 //                $conversation = Conversation::where('chat_ID',$value['contacts'][0]['wa_jd'])->first();
 //                if(!$conversation) {
