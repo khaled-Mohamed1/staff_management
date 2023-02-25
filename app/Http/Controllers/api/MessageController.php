@@ -538,7 +538,7 @@ class MessageController extends Controller
         }
     }
 
-    public function getUrl($f_media_id){
+    public function getUrl(){
         try{
 
             $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
@@ -552,7 +552,9 @@ class MessageController extends Controller
             $url = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
                 $payload)->throw()->json();
 
-            $this->downloadMediaImage($url);
+            return response()->json([
+                'success' => true
+            ],200);
 
 
         } catch (\Exception $e) {
@@ -564,7 +566,7 @@ class MessageController extends Controller
         }
     }
 
-    public function downloadMediaImage($f_url_media){
+    public function downloadMediaImage(){
         try{
 
             $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
@@ -637,6 +639,8 @@ class MessageController extends Controller
     public function processWebhook(Request $request){
         try {
 
+            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
+
             $bodyContent = json_decode($request->getContent(), true);
 
             $value = $bodyContent['entry'][0]['changes'][0]['value'];
@@ -644,12 +648,47 @@ class MessageController extends Controller
             if(!empty($value['messages'])){
 
                 if($value['messages'][0]['type'] == 'image'){
-                    $media_id = $value['messages'][0]['image']['id'];
                     //Here, you now have event and can process them how you like e.g Add to the database or generate a response
                     $file = 'log.txt';
                     $data =json_encode($bodyContent)."\n";
                     file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
-                    $this->getUrl($media_id);
+
+                    $media_id = $value['messages'][0]['image']['id'];
+                    $version = 'v15.0';
+                    $payload = [
+                        'phone_number_id' => '103217839375858',
+                    ];
+
+                    $url = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
+                        $payload)->throw()->json();
+
+                    //download media
+                    $url_media = $url;
+
+                    $ch = curl_init($url_media);
+
+                    $output_filename =  Str::random(16) . ".png";
+                    $fp = fopen('images/'.$output_filename, 'wb');
+
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 400);
+                    curl_setopt($ch, CURLOPT_HEADER, 0);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch,CURLOPT_CUSTOMREQUEST , "GET");
+                    curl_setopt($ch,CURLOPT_ENCODING , "");
+                    curl_setopt($ch,CURLOPT_FILE , $fp);
+
+                    $headers    = [];
+                    $headers[]  = "Authorization: Bearer " . $token;
+                    $headers[]  = "Accept-Language:en-US,en;q=0.5";
+                    $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    $raw = curl_exec($ch);
+
+                    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
+
                 }
 
 //                $conversation = Conversation::where('chat_ID',$value['contacts'][0]['wa_jd'])->first();
