@@ -21,7 +21,7 @@ Route::get('/', function () {
 //ngrok
 Route::get('/send-message', [MessageController::class, 'sendMessageTwo']);
 Route::get('/get_url', [MessageController::class, 'getUrl']);
-Route::get('/download_media', [MessageController::class, 'downloadMedia']);
+Route::get('/download_media', [MessageController::class, 'downloadMediaImage']);
 Route::get('/whatsapp-webhook', [MessageController::class, 'verifyWebhook']);
 Route::post('/whatsapp-webhook', [MessageController::class, 'processWebhook']);
 

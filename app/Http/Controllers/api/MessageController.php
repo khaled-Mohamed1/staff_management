@@ -549,7 +549,7 @@ class MessageController extends Controller
                 'phone_number_id' => '103217839375858',
             ];
 
-            $url = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
+            $url = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -566,12 +566,12 @@ class MessageController extends Controller
         }
     }
 
-    public function downloadMedia(){
+    public function downloadMediaImage(){
         try{
 
-            $token = 'EAAIK8c4aojYBAPiUhzVwl9LgisKYcUaQx5qgZBJhQGw1BRp3FeJ8yZCMSdbF8j4TrmODaffDpjGDrhSOZAvrZBpkYnwqWgC6wf4FlqT4HGZCN2tv6jB1ev79iYG1QxfYUEgrznEhf0ZAXtqx8l3xb8ZCgCKkEhy9vhzjnGyGTyH8Elqcn3DCJ3o9NYZAS0VA1ZBx8QOwQokxZCt4UcApNJmSmI';
+            $token = 'EAAIK8c4aojYBAP6XrXMWZBHon5GLRmZBM6uF3ejZBEYWEJiRsuWappI7tmuhWs4iWRJEaxCo1Rizl2CIcWyYURRpaXqaX2RBQnQ0bvx8hTZBN2i9NcTdqQgOX5OtdpT9AoXdS1PC29rm7KJYPfE8dWhytdvszsh974ma4CpZBI1HjAxzBU8KzZB3yWkZCOFVho9pYsjnwRcP4bzyyQxGqvv';
 
-            $url_media = 'https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=753950449645054&ext=1677273762&hash=ATuIazCTT9JuX8ZpXhB_F6Utfj_00Tm1BZqn_h_x_DLgeg';
+            $url_media = 'https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=739359821121837&ext=1677357540&hash=ATtfLZX_BAWYQoJU24xZSoES5JV4C1eQACta84WnFNeYRw';
             $version = 'v15.0';
 
             $ch = curl_init($url_media);
@@ -588,11 +588,10 @@ class MessageController extends Controller
             curl_setopt($ch,CURLOPT_ENCODING , "");
             curl_setopt($ch,CURLOPT_FILE , $fp);
 
-            $headers = [];
+            $headers    = [];
             $headers[]  = "Authorization: Bearer " . $token;
             $headers[]  = "Accept-Language:en-US,en;q=0.5";
-            $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
-AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+            $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             $raw = curl_exec($ch);
 
