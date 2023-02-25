@@ -538,73 +538,73 @@ class MessageController extends Controller
         }
     }
 
-    public function getUrl(){
-        try{
+//    public function getUrl(){
+//        try{
+//
+//            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
+//
+//            $media_id = $f_media_id;
+//            $version = 'v15.0';
+//            $payload = [
+//                'phone_number_id' => '103217839375858',
+//            ];
+//
+//            $url = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
+//                $payload)->throw()->json();
+//
+//            return response()->json([
+//                'success' => true
+//            ],200);
+//
+//
+//        } catch (\Exception $e) {
+//            // Return Json Response
+//            return response()->json([
+//                'status' => false,
+//                'message' => $e->getMessage()
+//            ], 500);
+//        }
+//    }
 
-            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
-
-            $media_id = $f_media_id;
-            $version = 'v15.0';
-            $payload = [
-                'phone_number_id' => '103217839375858',
-            ];
-
-            $url = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
-                $payload)->throw()->json();
-
-            return response()->json([
-                'success' => true
-            ],200);
-
-
-        } catch (\Exception $e) {
-            // Return Json Response
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function downloadMediaImage(){
-        try{
-
-            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
-
-            $url_media = $f_url_media;
-
-            $ch = curl_init($url_media);
-
-            $output_filename =  Str::random(16) . ".png";
-            $fp = fopen('images/'.$output_filename, 'wb');
-
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 400);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch,CURLOPT_CUSTOMREQUEST , "GET");
-            curl_setopt($ch,CURLOPT_ENCODING , "");
-            curl_setopt($ch,CURLOPT_FILE , $fp);
-
-            $headers    = [];
-            $headers[]  = "Authorization: Bearer " . $token;
-            $headers[]  = "Accept-Language:en-US,en;q=0.5";
-            $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            $raw = curl_exec($ch);
-
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-        } catch (\Exception $e) {
-            // Return Json Response
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
+//    public function downloadMediaImage(){
+//        try{
+//
+//            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
+//
+//            $url_media = $f_url_media;
+//
+//            $ch = curl_init($url_media);
+//
+//            $output_filename =  Str::random(16) . ".png";
+//            $fp = fopen('images/'.$output_filename, 'wb');
+//
+//            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+//            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+//            curl_setopt($ch, CURLOPT_TIMEOUT, 400);
+//            curl_setopt($ch, CURLOPT_HEADER, 0);
+//            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//            curl_setopt($ch,CURLOPT_CUSTOMREQUEST , "GET");
+//            curl_setopt($ch,CURLOPT_ENCODING , "");
+//            curl_setopt($ch,CURLOPT_FILE , $fp);
+//
+//            $headers    = [];
+//            $headers[]  = "Authorization: Bearer " . $token;
+//            $headers[]  = "Accept-Language:en-US,en;q=0.5";
+//            $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+//            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+//            $raw = curl_exec($ch);
+//
+//            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//            curl_close($ch);
+//
+//        } catch (\Exception $e) {
+//            // Return Json Response
+//            return response()->json([
+//                'status' => false,
+//                'message' => $e->getMessage()
+//            ], 500);
+//        }
+//    }
 
 
     public function verifyWebhook(Request $request){
@@ -639,7 +639,7 @@ class MessageController extends Controller
     public function processWebhook(Request $request){
         try {
 
-            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
+            $token = 'EAAIK8c4aojYBAHLC76XD5EDKieZBP6Gf25O7tN3l0Jf85uayI2BhrXmlYmHicFGAE3PtxxZB6fqYsRXRtn3DBc4hYZAACxr1CCdQQEMgHW2CSdtq0SMIA2RZBZBac0ZCsXMV9nKmbWXBALUQobioKYZCZBxo2tfXmx0wtJge0BNaNWo0s6ReFgUeAREO0DjCXLXTBhfO5pINZCjGwvIqZCcXCE';
 
             $bodyContent = json_decode($request->getContent(), true);
 
@@ -649,9 +649,9 @@ class MessageController extends Controller
 
                 if($value['messages'][0]['type'] == 'image'){
                     //Here, you now have event and can process them how you like e.g Add to the database or generate a response
-                    $file = 'log.txt';
-                    $data =json_encode($bodyContent)."\n";
-                    file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+                    // $file = 'log.txt';
+                    // $data =json_encode($bodyContent)."\n";
+                    // file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
 
                     $media_id = $value['messages'][0]['image']['id'];
                     $version = 'v15.0';
@@ -663,11 +663,12 @@ class MessageController extends Controller
                         $payload)->throw()->json();
 
                     //download media
-                    $url_media = $url;
+                    $media_url =json_encode($url)."\n";
+                    $url_media = $url['url'];
 
                     $ch = curl_init($url_media);
 
-                    $output_filename =  Str::random(16) . ".png";
+                    $output_filename =  Str::random(16);
                     $fp = fopen('images/'.$output_filename, 'wb');
 
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
@@ -688,6 +689,7 @@ class MessageController extends Controller
 
                     $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                     curl_close($ch);
+
 
                 }
 
@@ -739,5 +741,6 @@ class MessageController extends Controller
             ], 500);
         }
     }
+
 
 }
