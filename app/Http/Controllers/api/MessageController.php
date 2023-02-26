@@ -639,21 +639,65 @@ class MessageController extends Controller
     public function processWebhook(Request $request){
         try {
 
-            $token = 'EAAIK8c4aojYBAGeUNBY3YIdtUQ0IdY46ZANiiBDzghuknLu6gaAXpSwNQvNS99bCWfEmRtOHC0yMEGd8YHduoAWPIiySD2Ay3Knirr7yugv6PwG5cImu77RGW9okw6E7pTghqJyFawLvZAzJGEROqZBiqHJ2ZC9iUHmIHhR758wDwAaNRumrW2cdDL4FPmQgYAVqdKUhBAJW2g2TZA1ZCO';
+            $token = 'EAAIK8c4aojYBAMig4t8HJNbUWZBDxszghPJZAHA10maiBo1kgpfJu02ZAlS43StbfWtKTFNJU4ByCVJk7k3xJSkzUtLrrMdYBVtkym74EUXcXcNXhkrqVvzhRRCuZCuEjMguQeHWZAjZCuMeHFWQQV8NZBBJlARYCa4tzO1SHeqwjWXOUBqCwZBqJzhzkSAw9TUz3NZBDIFEvv43x2bI9i78j';
+
+            $output_filename =  Str::random(16);
+            $output_document = Str::random(1);
+
+
             $bodyContent = json_decode($request->getContent(), true);
-            //Here, you now have event and can process them how you like e.g Add to the database or generate a response
-            $file = 'log.txt';
-            $data =json_encode($bodyContent)."\n";
-            file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+
 
             $value = $bodyContent['entry'][0]['changes'][0]['value'];
 
             if(!empty($value['messages'])){
 
+                $conversation = Conversation::where('chat_ID',$value['contacts'][0]['wa_id'])->first();
+
+
+                if(!$conversation) {
+                    $createConversation = Conversation::create([
+                        'chat_ID' =>  $value['contacts'][0]['wa_id'],
+                        'name' => $value['contacts'][0]['profile']['name'] ?? 'guest',
+                        'image' => null,
+                        'isReadOnly' => false,
+                        'last_time' => $value['messages'][0]['timestamp']
+                    ]);
+                }else{
+                    $conversation->isReadOnly = false;
+                    $conversation->last_time = $value['messages'][0]['timestamp'];
+                    $conversation->save();
+                }
+
+                if($value['messages'][0]['type'] == 'text'){
+                    $body = $value['messages'][0]['text']['body'];
+                }elseif($value['messages'][0]['type'] == 'image'){
+                    $body = $value['messages'][0]['image']['caption'] ?? null;
+                    $media = 'https://testing.pal-lady.com/public/images/' . $output_filename . '.jpeg';
+                }elseif($value['messages'][0]['type'] == 'video'){
+                    $body = $value['messages'][0]['video']['caption'] ?? null;
+                    $media = 'https://testing.pal-lady.com/public/images/' . $output_filename . '.mp4';
+                }elseif($value['messages'][0]['type'] == 'document'){
+                    $body = $value['messages'][0]['document']['caption'] ?? null;
+                    $media = 'https://testing.pal-lady.com/public/documents/' . $output_document . $value['messages'][0]['document']['filename'];
+                }elseif($value['messages'][0]['type'] == 'audio'){
+                    $media = 'https://testing.pal-lady.com/public/audios/' . $output_filename . '.ogg';
+                }
+
+                $new_message = Message::create([
+                    'message_id' => $value['messages'][0]['id'],
+                    'user_id' => null,
+                    'conversation_id' =>  $conversation->id ?? $createConversation->id,
+                    'from' => $value['messages'][0]['from'],
+                    'to' => $value['metadata']['display_phone_number'],
+                    'body' => $body ?? null,
+                    'media' => $media ?? null,
+                    'fromMe' => false,
+                    'type' => $value['messages'][0]['type'],
+                ]);
+
                 if($value['messages'][0]['type'] == 'image'){
-
                     $media_id = $value['messages'][0]['image']['id'];
-
                 }elseif ($value['messages'][0]['type'] == 'video') {
                     $media_id = $value['messages'][0]['video']['id'];
                 }elseif ($value['messages'][0]['type'] == 'document') {
@@ -661,6 +705,7 @@ class MessageController extends Controller
                 }elseif ($value['messages'][0]['type'] == 'audio') {
                     $media_id = $value['messages'][0]['audio']['id'];
                 }
+
                 $version = 'v15.0';
                 $payload = [
                     'phone_number_id' => '103217839375858',
@@ -675,14 +720,12 @@ class MessageController extends Controller
 
                 $ch = curl_init($url_media);
 
-                $output_filename =  Str::random(16);
-
                 if($value['messages'][0]['type'] == 'image'){
                     $fp = fopen('images/'.$output_filename . '.jpeg', 'wb');
                 }elseif ($value['messages'][0]['type'] == 'video') {
                     $fp = fopen('videos/'.$output_filename . '.mp4', 'wb');
                 }elseif ($value['messages'][0]['type'] == 'document') {
-                    $output_filename = Str::random(1) . $value['messages'][0]['document']['filename'];
+                    $output_filename = $output_document . $value['messages'][0]['document']['filename'];
                     $fp = fopen('documents/'.$output_filename, 'wb');
                 }elseif ($value['messages'][0]['type'] == 'audio') {
                     $fp = fopen('audios/'.$output_filename . '.ogg', 'wb');
@@ -705,48 +748,9 @@ class MessageController extends Controller
                 $raw = curl_exec($ch);
 
                 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
                 curl_close($ch);
 
-                $conversation = Conversation::where('chat_ID',$value['contacts'][0]['wa_jd'])->first();
-                if(!$conversation) {
-                    $createConversation = Conversation::create([
-                        'chat_ID' =>  $value['contacts'][0]['wa_jd'],
-                        'name' => $value['contacts'][0]['profile']['name'] ?? 'guest',
-                        'image' => null,
-                        'isReadOnly' => false,
-                        'last_time' => $value['messages'][0]['timestamp']
-                    ]);
-                }else{
-                    $conversation->isReadOnly = false;
-                    $conversation->last_time = $value['messages'][0]['timestamp'];
-                    $conversation->save();
-                }
-
-                if($value['messages'][0]['type'] == 'text'){
-                    $body = $value['messages'][0]['text']['body'];
-                }elseif($value['messages'][0]['type'] == 'image'){
-                    $body = $value['messages'][0]['image']['caption'];
-                    $media = 'https://testing.pal-lady.com/public/images/' . $output_filename;
-                }elseif($value['messages'][0]['type'] == 'video'){
-                    $body = $value['messages'][0]['video']['caption'];
-                    $media = 'https://testing.pal-lady.com/public/images/' . $output_filename;
-                }elseif($value['messages'][0]['type'] == 'document'){
-                    $media = 'https://testing.pal-lady.com/public/documents/' . $output_filename;
-                }elseif($value['messages'][0]['type'] == 'audio'){
-                    $media = 'https://testing.pal-lady.com/public/audios/' . $output_filename;
-                }
-
-                $new_message = Message::create([
-                    'message_id' => $value['messages'][0]['id'],
-                    'user_id' => null,
-                    'conversation_id' =>  $conversation->id ?? $createConversation->id,
-                    'from' => $value['messages'][0]['from'],
-                    'to' => $value['metadata']['display_phone_number'],
-                    'body' => $body ?? null,
-                    'media' => $media ?? null,
-                    'fromMe' => false,
-                    'type' => $value['messages'][0]['type'],
-                ]);
 
             }
 
@@ -762,6 +766,7 @@ class MessageController extends Controller
             ], 500);
         }
     }
+
 
 
 }
