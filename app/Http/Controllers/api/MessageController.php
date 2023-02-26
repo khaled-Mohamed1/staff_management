@@ -679,6 +679,7 @@ class MessageController extends Controller
                     $fp = fopen('images/'.$output_filename, 'wb');
                 }elseif ($value['messages'][0]['type'] == 'video') {
                     $fp = fopen('videos/'.$output_filename, 'wb');
+                    //teeset
                 }
 
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
