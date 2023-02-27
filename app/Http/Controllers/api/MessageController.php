@@ -137,8 +137,8 @@ class MessageController extends Controller
                 'recipient_type' => 'individual',
                 'to' => $conversation->chat_ID,
                 'type' => 'image',
-                "text" => [
-                    "link"=> $path,
+                "image" => [
+                    "link" => $path,
                     "caption"=> $request->caption ?? null
                 ]
 
