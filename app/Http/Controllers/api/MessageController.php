@@ -370,6 +370,8 @@ class MessageController extends Controller
 
         try {
 
+            $setting = Setting::find(1);
+
             // Validate the request data
             $this->validate($request, [
                 'video' => 'file|mimes:mp4,3gp,mov|max:16384',
@@ -386,39 +388,49 @@ class MessageController extends Controller
 
 
             $conversation = Conversation::find($request->conversation_id);
-            $conversation->user_id = auth()->user()->id;
-            $conversation->status = 'مستمرة';
-            $conversation->save();
+            if($conversation->user_id == null){
+                $conversation->user_id = auth()->user()->id;
+                $conversation->status = 'مستمرة';
+                $conversation->save();
+
+                broadcast(new ConversationHide($conversation));
+
+            }
 
             //send message to WhatsApp
-            $params=array(
-                'token' => 'ioh2xj5b7nu53gmb',
+            $new_message = Message::create([
+                'message_id' => null,
+                'user_id' => auth()->user()->id,
+                'conversation_id' =>  $conversation->id,
+                'from' => $setting->company_phone_NO,
                 'to' => $conversation->chat_ID,
-                'video' => $path,
-                'caption' => $request->caption,
-            );
+                'body' => $request->caption,
+                'media' => $path,
+                'fromMe' => true,
+                'type' => 'video',
+            ]);
 
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/video",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => http_build_query($params),
-                CURLOPT_HTTPHEADER => array(
-                    "content-type: application/x-www-form-urlencoded"
-                ),
-            ));
+            broadcast(new SendMessage($new_message));
 
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
+            //send message to WhatsApp
+            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
 
-            curl_close($curl);
+            $phoneId = '103217839375858';
+            $version = 'v15.0';
+            $payload = [
+                'messaging_product' => 'whatsapp',
+                'recipient_type' => 'individual',
+                'to' => $conversation->chat_ID,
+                'type' => 'video',
+                "video" => [
+                    "link" => $path,
+                    "caption"=> $request->caption ?? null
+                ]
+
+            ];
+
+            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+                $payload)->throw()->json();
 
             return response()->json([
                 'status' => true,
