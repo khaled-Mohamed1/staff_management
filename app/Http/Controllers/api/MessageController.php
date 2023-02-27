@@ -28,9 +28,7 @@ class MessageController extends Controller
                 $conversation->user_id = auth()->user()->id;
                 $conversation->status = 'مستمرة';
                 $conversation->save();
-
                 broadcast(new ConversationHide($conversation));
-
             }
 
             $new_message = Message::create([
@@ -61,7 +59,6 @@ class MessageController extends Controller
                     "preview_url"=> false,
                     "body"=> $request->body
                 ]
-
             ];
 
             $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
@@ -101,17 +98,13 @@ class MessageController extends Controller
 
             $path = 'https://testing.pal-lady.com/storage/app/public/images/' . $imageName;
 
-
             $conversation = Conversation::find($request->conversation_id);
             if($conversation->user_id == null){
                 $conversation->user_id = auth()->user()->id;
                 $conversation->status = 'مستمرة';
                 $conversation->save();
-
                 broadcast(new ConversationHide($conversation));
-
             }
-
 
             $new_message = Message::create([
                 'message_id' => null,
@@ -141,7 +134,6 @@ class MessageController extends Controller
                     "link" => $path,
                     "caption"=> $request->caption ?? null
                 ]
-
             ];
 
             $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
@@ -181,15 +173,12 @@ class MessageController extends Controller
 
             $path = 'https://testing.pal-lady.com/storage/app/public/audio/' . $audioName;
 
-
             $conversation = Conversation::find($request->conversation_id);
             if($conversation->user_id == null){
                 $conversation->user_id = auth()->user()->id;
                 $conversation->status = 'مستمرة';
                 $conversation->save();
-
                 broadcast(new ConversationHide($conversation));
-
             }
 
             $new_message = Message::create([
@@ -219,7 +208,6 @@ class MessageController extends Controller
                 "audio" => [
                     "link" => $path,
                 ]
-
             ];
 
             $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
@@ -238,72 +226,72 @@ class MessageController extends Controller
         }
     }
 
-    public function sendAudio(Request $request): \Illuminate\Http\JsonResponse
-    {
-
-        try {
-
-            // Validate the request data
-            $this->validate($request, [
-                'audio' => 'file|mimes:mp3,aac,ogg|max:16384',
-            ]);
-
-            $audioName = Str::random(16) . "." . $request->audio->getClientOriginalExtension();
-
-            // If a audio was uploaded, store it in the file system or cloud storage
-            if ($request->hasFile('audio')) {
-                Storage::disk('public')->put('audio/' . $audioName, file_get_contents($request->audio));
-            }
-
-            $path = 'https://testing.pal-lady.com/storage/app/public/audio/' . $audioName;
-
-
-            $conversation = Conversation::find($request->conversation_id);
-            $conversation->user_id = auth()->user()->id;
-            $conversation->status = 'مستمرة';
-            $conversation->save();
-
-            //send message to WhatsApp
-            $params=array(
-                'token' => 'ioh2xj5b7nu53gmb',
-                'to' => $conversation->chat_ID,
-                'audio' => $path,
-            );
-
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/audio",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => http_build_query($params),
-                CURLOPT_HTTPHEADER => array(
-                    "content-type: application/x-www-form-urlencoded"
-                ),
-            ));
-
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
-
-            curl_close($curl);
-
-            return response()->json([
-                'status' => true,
-            ], 200);
-
-        } catch (\Exception $e) {
-            // Return Json Response
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
+//    public function sendAudio(Request $request): \Illuminate\Http\JsonResponse
+//    {
+//
+//        try {
+//
+//            // Validate the request data
+//            $this->validate($request, [
+//                'audio' => 'file|mimes:mp3,aac,ogg|max:16384',
+//            ]);
+//
+//            $audioName = Str::random(16) . "." . $request->audio->getClientOriginalExtension();
+//
+//            // If a audio was uploaded, store it in the file system or cloud storage
+//            if ($request->hasFile('audio')) {
+//                Storage::disk('public')->put('audio/' . $audioName, file_get_contents($request->audio));
+//            }
+//
+//            $path = 'https://testing.pal-lady.com/storage/app/public/audio/' . $audioName;
+//
+//
+//            $conversation = Conversation::find($request->conversation_id);
+//            $conversation->user_id = auth()->user()->id;
+//            $conversation->status = 'مستمرة';
+//            $conversation->save();
+//
+//            //send message to WhatsApp
+//            $params=array(
+//                'token' => 'ioh2xj5b7nu53gmb',
+//                'to' => $conversation->chat_ID,
+//                'audio' => $path,
+//            );
+//
+//            $curl = curl_init();
+//            curl_setopt_array($curl, array(
+//                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/audio",
+//                CURLOPT_RETURNTRANSFER => true,
+//                CURLOPT_ENCODING => "",
+//                CURLOPT_MAXREDIRS => 10,
+//                CURLOPT_TIMEOUT => 30,
+//                CURLOPT_SSL_VERIFYHOST => 0,
+//                CURLOPT_SSL_VERIFYPEER => 0,
+//                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//                CURLOPT_CUSTOMREQUEST => "POST",
+//                CURLOPT_POSTFIELDS => http_build_query($params),
+//                CURLOPT_HTTPHEADER => array(
+//                    "content-type: application/x-www-form-urlencoded"
+//                ),
+//            ));
+//
+//            $response = curl_exec($curl);
+//            $err = curl_error($curl);
+//
+//            curl_close($curl);
+//
+//            return response()->json([
+//                'status' => true,
+//            ], 200);
+//
+//        } catch (\Exception $e) {
+//            // Return Json Response
+//            return response()->json([
+//                'status' => false,
+//                'message' => $e->getMessage()
+//            ], 500);
+//        }
+//    }
 
     public function sendDocument(Request $request): \Illuminate\Http\JsonResponse
     {
@@ -328,17 +316,13 @@ class MessageController extends Controller
 
             $path = 'https://testing.pal-lady.com/storage/app/public/documents/' . $documentName;
 
-
             $conversation = Conversation::find($request->conversation_id);
             if($conversation->user_id == null){
                 $conversation->user_id = auth()->user()->id;
                 $conversation->status = 'مستمرة';
                 $conversation->save();
-
                 broadcast(new ConversationHide($conversation));
-
             }
-
 
             $new_message = Message::create([
                 'message_id' => null,
@@ -369,7 +353,6 @@ class MessageController extends Controller
                     "caption"=> $request->caption ?? null,
                     "filename" => $originalName
                 ]
-
             ];
 
             $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
@@ -558,111 +541,6 @@ class MessageController extends Controller
 
     // }
 
-    public function sendMessageTwo(){
-        try{
-
-            $token = 'EAAIK8c4aojYBAPHPhuyqLZAlDeOiaLzhhIRfiJZBTv3kJY9z0fElNCsGyItioFKyGm0xrePjGllton9cHMWGM7n3wwx20iNGvYym2rwNYgtDKO8jKvfWsGm3CO3DNcL9OwlAGA4yzl5FfZBTA678iTBUgaMoi0wDRw048aZALwHeCfMjnltdnouy0pskmP8BzAB2H5KZAyORavI9Yxced';
-
-            $phoneId = '103217839375858';
-            $version = 'v15.0';
-            $payload = [
-                'messaging_product' => 'whatsapp',
-                'recipient_type' => 'individual',
-                'to' => '970567494761',
-                'type' => 'text',
-                "text" => [
-                    "preview_url"=> false,
-                    "body"=> "eeewqe"
-                ]
-
-            ];
-
-            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
-                $payload)->throw()->json();
-
-            return response()->json([
-                'success' => true,
-                'data' => $message
-            ],200);
-
-        } catch (\Exception $e) {
-            // Return Json Response
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-//    public function getUrl(){
-//        try{
-//
-//            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
-//
-//            $media_id = $f_media_id;
-//            $version = 'v15.0';
-//            $payload = [
-//                'phone_number_id' => '103217839375858',
-//            ];
-//
-//            $url = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
-//                $payload)->throw()->json();
-//
-//            return response()->json([
-//                'success' => true
-//            ],200);
-//
-//
-//        } catch (\Exception $e) {
-//            // Return Json Response
-//            return response()->json([
-//                'status' => false,
-//                'message' => $e->getMessage()
-//            ], 500);
-//        }
-//    }
-
-//    public function downloadMediaImage(){
-//        try{
-//
-//            $token = 'EAAIK8c4aojYBAFiFTRgxk6S1bJ1ZAXqtQcpZBUm48xFd1WMXAZBIbynFFmUPFJ53gWeSZAZA3EGvmCJXRSCFuPeLYqOZBZC0ynOaBICDajOJdJOZBLlS9vMmZCJXK4aqMJnjz5rSs497pxZBE3jolzt2CwpFZBIJf0ZAjKD0qkalymuBtnqjcRDF9pZBbYyCcZA1bLDiZBFjhPTLlNdYgZDZD';
-//
-//            $url_media = $f_url_media;
-//
-//            $ch = curl_init($url_media);
-//
-//            $output_filename =  Str::random(16) . ".png";
-//            $fp = fopen('images/'.$output_filename, 'wb');
-//
-//            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-//            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-//            curl_setopt($ch, CURLOPT_TIMEOUT, 400);
-//            curl_setopt($ch, CURLOPT_HEADER, 0);
-//            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//            curl_setopt($ch,CURLOPT_CUSTOMREQUEST , "GET");
-//            curl_setopt($ch,CURLOPT_ENCODING , "");
-//            curl_setopt($ch,CURLOPT_FILE , $fp);
-//
-//            $headers    = [];
-//            $headers[]  = "Authorization: Bearer " . $token;
-//            $headers[]  = "Accept-Language:en-US,en;q=0.5";
-//            $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-//            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-//            $raw = curl_exec($ch);
-//
-//            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-//            curl_close($ch);
-//
-//        } catch (\Exception $e) {
-//            // Return Json Response
-//            return response()->json([
-//                'status' => false,
-//                'message' => $e->getMessage()
-//            ], 500);
-//        }
-//    }
-
-
     public function verifyWebhook(Request $request){
         try {
 
@@ -812,7 +690,6 @@ class MessageController extends Controller
                 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
                 curl_close($ch);
-
 
             }
 
