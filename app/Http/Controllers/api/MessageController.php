@@ -317,16 +317,16 @@ class MessageController extends Controller
                 'document' => 'file|mimes:zip,xlsx,csv,txt,pptx,docx,pdf|max:32768',
             ]);
 
-            $originalName = Str::random(1) . "." .$request->document->getClientOriginalName();
+            $originalName = Str::random(1) .$request->document->getClientOriginalName();
 
             $documentName = Str::random(16) . "." . $request->document->getClientOriginalExtension();
 
             // If an image was uploaded, store it in the file system or cloud storage
             if ($request->hasFile('document')) {
-                Storage::disk('public')->put('documents/' . $originalName, file_get_contents($request->document));
+                Storage::disk('public')->put('documents/' . $documentName, file_get_contents($request->document));
             }
 
-            $path = 'https://testing.pal-lady.com/storage/app/public/documents/' . $originalName;
+            $path = 'https://testing.pal-lady.com/storage/app/public/documents/' . $documentName;
 
 
             $conversation = Conversation::find($request->conversation_id);
@@ -366,7 +366,8 @@ class MessageController extends Controller
                 'type' => 'document',
                 "document" => [
                     "link" => $path,
-                    "caption"=> $request->caption ?? null
+                    "caption"=> $request->caption ?? null,
+                    "filename" => $originalName
                 ]
 
             ];
