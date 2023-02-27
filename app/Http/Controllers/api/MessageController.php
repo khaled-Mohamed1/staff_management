@@ -8,6 +8,7 @@ use App\Events\Message\SendMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -20,6 +21,8 @@ class MessageController extends Controller
 
         try {
 
+            $setting = Setting::find(1);
+
             $conversation = Conversation::find($request->conversation_id);
             if($conversation->user_id == null){
                 $conversation->user_id = auth()->user()->id;
@@ -30,9 +33,22 @@ class MessageController extends Controller
 
             }
 
+            $new_message = Message::create([
+                'message_id' => null,
+                'user_id' => auth()->user()->id,
+                'conversation_id' =>  $conversation->id,
+                'from' => $setting->company_phone_NO,
+                'to' => $conversation->chat_ID,
+                'body' => $request->body,
+                'media' => null,
+                'fromMe' => true,
+                'type' => 'text',
+            ]);
+
+            broadcast(new SendMessage($new_message));
 
             //send message to WhatsApp
-            $token = 'EAAIK8c4aojYBAPHPhuyqLZAlDeOiaLzhhIRfiJZBTv3kJY9z0fElNCsGyItioFKyGm0xrePjGllton9cHMWGM7n3wwx20iNGvYym2rwNYgtDKO8jKvfWsGm3CO3DNcL9OwlAGA4yzl5FfZBTA678iTBUgaMoi0wDRw048aZALwHeCfMjnltdnouy0pskmP8BzAB2H5KZAyORavI9Yxced';
+            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
@@ -631,7 +647,7 @@ class MessageController extends Controller
     public function processWebhook(Request $request){
         try {
 
-            $token = 'EAAIK8c4aojYBAPHPhuyqLZAlDeOiaLzhhIRfiJZBTv3kJY9z0fElNCsGyItioFKyGm0xrePjGllton9cHMWGM7n3wwx20iNGvYym2rwNYgtDKO8jKvfWsGm3CO3DNcL9OwlAGA4yzl5FfZBTA678iTBUgaMoi0wDRw048aZALwHeCfMjnltdnouy0pskmP8BzAB2H5KZAyORavI9Yxced';
+            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
 
             $output_filename =  Str::random(16);
             $output_document = Str::random(1);
