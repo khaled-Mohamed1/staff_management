@@ -201,7 +201,7 @@ class MessageController extends Controller
                 'body' => $request->caption,
                 'media' => $path,
                 'fromMe' => true,
-                'type' => 'image',
+                'type' => 'audio',
             ]);
 
             broadcast(new SendMessage($new_message));
@@ -310,6 +310,8 @@ class MessageController extends Controller
 
         try {
 
+            $setting = Setting::find(1);
+
             // Validate the request data
             $this->validate($request, [
                 'document' => 'file|mimes:zip,xlsx,csv,txt,pptx,docx,pdf|max:32768',
@@ -328,40 +330,49 @@ class MessageController extends Controller
 
 
             $conversation = Conversation::find($request->conversation_id);
-            $conversation->user_id = auth()->user()->id;
-            $conversation->status = 'مستمرة';
-            $conversation->save();
+            if($conversation->user_id == null){
+                $conversation->user_id = auth()->user()->id;
+                $conversation->status = 'مستمرة';
+                $conversation->save();
+
+                broadcast(new ConversationHide($conversation));
+
+            }
+
+
+            $new_message = Message::create([
+                'message_id' => null,
+                'user_id' => auth()->user()->id,
+                'conversation_id' =>  $conversation->id,
+                'from' => $setting->company_phone_NO,
+                'to' => $conversation->chat_ID,
+                'body' => $request->caption,
+                'media' => $path,
+                'fromMe' => true,
+                'type' => 'document',
+            ]);
+
+            broadcast(new SendMessage($new_message));
 
             //send message to WhatsApp
-            $params=array(
-                'token' => 'ioh2xj5b7nu53gmb',
+            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
+
+            $phoneId = '103217839375858';
+            $version = 'v15.0';
+            $payload = [
+                'messaging_product' => 'whatsapp',
+                'recipient_type' => 'individual',
                 'to' => $conversation->chat_ID,
-                'filename' => $originalName,
-                'document' => $path,
-                'caption' => $request->caption
-            );
+                'type' => 'document',
+                "document" => [
+                    "link" => $path,
+                    "caption"=> $request->caption ?? null
+                ]
 
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/document",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => http_build_query($params),
-                CURLOPT_HTTPHEADER => array(
-                    "content-type: application/x-www-form-urlencoded"
-                ),
-            ));
+            ];
 
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
-
-            curl_close($curl);
+            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+                $payload)->throw()->json();
 
             return response()->json([
                 'status' => true,
