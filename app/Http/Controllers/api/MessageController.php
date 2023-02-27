@@ -85,6 +85,8 @@ class MessageController extends Controller
 
         try {
 
+            $setting = Setting::find(1);
+
             // Validate the request data
             $this->validate($request, [
                 'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:16384',
@@ -109,6 +111,21 @@ class MessageController extends Controller
                 broadcast(new ConversationHide($conversation));
 
             }
+
+
+            $new_message = Message::create([
+                'message_id' => null,
+                'user_id' => auth()->user()->id,
+                'conversation_id' =>  $conversation->id,
+                'from' => $setting->company_phone_NO,
+                'to' => $conversation->chat_ID,
+                'body' => $request->caption,
+                'media' => $path,
+                'fromMe' => true,
+                'type' => 'image',
+            ]);
+
+            broadcast(new SendMessage($new_message));
 
             //send message to WhatsApp
             $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
