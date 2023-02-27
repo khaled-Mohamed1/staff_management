@@ -32,32 +32,24 @@ class MessageController extends Controller
 
 
             //send message to WhatsApp
-            $params=array(
-                'token' => 'ioh2xj5b7nu53gmb',
+            $token = 'EAAIK8c4aojYBAPHPhuyqLZAlDeOiaLzhhIRfiJZBTv3kJY9z0fElNCsGyItioFKyGm0xrePjGllton9cHMWGM7n3wwx20iNGvYym2rwNYgtDKO8jKvfWsGm3CO3DNcL9OwlAGA4yzl5FfZBTA678iTBUgaMoi0wDRw048aZALwHeCfMjnltdnouy0pskmP8BzAB2H5KZAyORavI9Yxced';
+
+            $phoneId = '103217839375858';
+            $version = 'v15.0';
+            $payload = [
+                'messaging_product' => 'whatsapp',
+                'recipient_type' => 'individual',
                 'to' => $conversation->chat_ID,
-                'body' => $request->body
-            );
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.ultramsg.com/instance32418/messages/chat",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => http_build_query($params),
-                CURLOPT_HTTPHEADER => array(
-                    "content-type: application/x-www-form-urlencoded"
-                ),
-            ));
+                'type' => 'text',
+                "text" => [
+                    "preview_url"=> false,
+                    "body"=> $request->body
+                ]
 
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
+            ];
 
-            curl_close($curl);
+            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+                $payload)->throw()->json();
 
             return response()->json([
                 'status' => true,
@@ -505,7 +497,7 @@ class MessageController extends Controller
     public function sendMessageTwo(){
         try{
 
-            $token = 'EAAIK8c4aojYBAD5ZADyOMEhFHvKRjL0JZC2CYkTzAPONhDu84PufVmCVMN9Ij0NdOWPtvIR3eF2cwIz0IMvZArZCZAAhJHE0rkPgskI1TcoUcr5ZBKXRk2abo3rCBOVpUtAZCjWOgpQVlAkX0G7cZArSnanXXacxTv8iU1hi2ZAkTaZCkWEdlUeXZBAaGAkCCZAitiUtzYAdRaWQZB1q5Q4KgWOgY';
+            $token = 'EAAIK8c4aojYBAPHPhuyqLZAlDeOiaLzhhIRfiJZBTv3kJY9z0fElNCsGyItioFKyGm0xrePjGllton9cHMWGM7n3wwx20iNGvYym2rwNYgtDKO8jKvfWsGm3CO3DNcL9OwlAGA4yzl5FfZBTA678iTBUgaMoi0wDRw048aZALwHeCfMjnltdnouy0pskmP8BzAB2H5KZAyORavI9Yxced';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
@@ -639,7 +631,7 @@ class MessageController extends Controller
     public function processWebhook(Request $request){
         try {
 
-            $token = 'EAAIK8c4aojYBAD5ZADyOMEhFHvKRjL0JZC2CYkTzAPONhDu84PufVmCVMN9Ij0NdOWPtvIR3eF2cwIz0IMvZArZCZAAhJHE0rkPgskI1TcoUcr5ZBKXRk2abo3rCBOVpUtAZCjWOgpQVlAkX0G7cZArSnanXXacxTv8iU1hi2ZAkTaZCkWEdlUeXZBAaGAkCCZAitiUtzYAdRaWQZB1q5Q4KgWOgY';
+            $token = 'EAAIK8c4aojYBAPHPhuyqLZAlDeOiaLzhhIRfiJZBTv3kJY9z0fElNCsGyItioFKyGm0xrePjGllton9cHMWGM7n3wwx20iNGvYym2rwNYgtDKO8jKvfWsGm3CO3DNcL9OwlAGA4yzl5FfZBTA678iTBUgaMoi0wDRw048aZALwHeCfMjnltdnouy0pskmP8BzAB2H5KZAyORavI9Yxced';
 
             $output_filename =  Str::random(16);
             $output_document = Str::random(1);
