@@ -412,100 +412,100 @@ class MessageController extends Controller
         }
     }
 
-    public function webhook(){
-        $data = file_get_contents("php://input");
-        $event = json_decode($data, true);
-        if(isset($event)){
-            //Here, you now have event and can process them how you like e.g Add to the database or generate a response
-            $file = 'log.txt';
-            $data =json_encode($event)."\n";
-            file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+    // public function webhook(){
+    //     $data = file_get_contents("php://input");
+    //     $event = json_decode($data, true);
+    //     if(isset($event)){
+    //         //Here, you now have event and can process them how you like e.g Add to the database or generate a response
+    //         $file = 'log.txt';
+    //         $data =json_encode($event)."\n";
+    //         file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
 
-            if($event['event_type'] == 'message_received'){
-                $conversation = Conversation::where('chat_ID',$event['data']['from'])->first();
-            }else{
-                $conversation = Conversation::where('chat_ID',$event['data']['to'])->first();
-            }
+    //         if($event['event_type'] == 'message_received'){
+    //             $conversation = Conversation::where('chat_ID',$event['data']['from'])->first();
+    //         }else{
+    //             $conversation = Conversation::where('chat_ID',$event['data']['to'])->first();
+    //         }
 
-            if(!$conversation){
+    //         if(!$conversation){
 
-                if($event['event_type'] == 'message_received'){
-                    $us = $event['data']['from'];
-                }else{
-                    $us = $event['data']['to'];
-                }
+    //             if($event['event_type'] == 'message_received'){
+    //                 $us = $event['data']['from'];
+    //             }else{
+    //                 $us = $event['data']['to'];
+    //             }
 
-                //get image of the user
-                $params=array(
-                    'token' => 'ioh2xj5b7nu53gmb',
-                    'chatId' => $us
-                );
-                $curl = curl_init();
+    //             //get image of the user
+    //             $params=array(
+    //                 'token' => 'ioh2xj5b7nu53gmb',
+    //                 'chatId' => $us
+    //             );
+    //             $curl = curl_init();
 
-                curl_setopt_array($curl, array(
-                    CURLOPT_URL => "https://api.ultramsg.com/instance32418/contacts/image?" .http_build_query($params),
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => "",
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 30,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => "GET",
-                    CURLOPT_HTTPHEADER => array(
-                        "content-type: application/x-www-form-urlencoded"
-                    ),
-                ));
+    //             curl_setopt_array($curl, array(
+    //                 CURLOPT_URL => "https://api.ultramsg.com/instance32418/contacts/image?" .http_build_query($params),
+    //                 CURLOPT_RETURNTRANSFER => true,
+    //                 CURLOPT_ENCODING => "",
+    //                 CURLOPT_MAXREDIRS => 10,
+    //                 CURLOPT_TIMEOUT => 30,
+    //                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //                 CURLOPT_CUSTOMREQUEST => "GET",
+    //                 CURLOPT_HTTPHEADER => array(
+    //                     "content-type: application/x-www-form-urlencoded"
+    //                 ),
+    //             ));
 
-                $response = curl_exec($curl);
-                $err = curl_error($curl);
+    //             $response = curl_exec($curl);
+    //             $err = curl_error($curl);
 
-                curl_close($curl);
+    //             curl_close($curl);
 
-                $image = json_decode($response, true);
+    //             $image = json_decode($response, true);
 
-                $createConversation = Conversation::create([
-                    'chat_ID' =>  $event['data']['from'],
-                    'name' => $event['data']['pushname'] ?? 'guest',
-                    'image' => $image['success'] ?? null,
-                    'isReadOnly' => false,
-                    'last_time' => $event['data']['time']
-                ]);
+    //             $createConversation = Conversation::create([
+    //                 'chat_ID' =>  $event['data']['from'],
+    //                 'name' => $event['data']['pushname'] ?? 'guest',
+    //                 'image' => $image['success'] ?? null,
+    //                 'isReadOnly' => false,
+    //                 'last_time' => $event['data']['time']
+    //             ]);
 
-            }else{
-                $conversation->isReadOnly = $event['data']['fromMe'];
-                $conversation->last_time = $event['data']['time'];
-                $conversation->save();
-            }
+    //         }else{
+    //             $conversation->isReadOnly = $event['data']['fromMe'];
+    //             $conversation->last_time = $event['data']['time'];
+    //             $conversation->save();
+    //         }
 
-            if($event['event_type'] == 'message_create' && $event['data']['ack'] == 'server') {
-                $user = 1;
-            }
+    //         if($event['event_type'] == 'message_create' && $event['data']['ack'] == 'server') {
+    //             $user = 1;
+    //         }
 
-            $new_message = Message::create([
-                'message_id' => $event['data']['id'],
-                'user_id' => $user ?? null,
-                'conversation_id' =>  $conversation->id ?? $createConversation->id,
-                'from' => $event['data']['from'],
-                'to' => $event['data']['to'],
-                'body' => $event['data']['body'],
-                'media' => $event['data']['media'],
-                'fromMe' => $event['data']['fromMe'],
-                'type' => $event['data']['type'],
-            ]);
+    //         $new_message = Message::create([
+    //             'message_id' => $event['data']['id'],
+    //             'user_id' => $user ?? null,
+    //             'conversation_id' =>  $conversation->id ?? $createConversation->id,
+    //             'from' => $event['data']['from'],
+    //             'to' => $event['data']['to'],
+    //             'body' => $event['data']['body'],
+    //             'media' => $event['data']['media'],
+    //             'fromMe' => $event['data']['fromMe'],
+    //             'type' => $event['data']['type'],
+    //         ]);
 
-            if(!$conversation) {
-                broadcast(new ConversationCreate($createConversation));
-            }
+    //         if(!$conversation) {
+    //             broadcast(new ConversationCreate($createConversation));
+    //         }
 
-            broadcast(new SendMessage($new_message));
+    //         broadcast(new SendMessage($new_message));
 
-        }
+    //     }
 
-    }
+    // }
 
     public function sendMessageTwo(){
         try{
 
-            $token = 'EAAIK8c4aojYBAEHZBVd7ZABZAsAh0PGZClqYc8jZBkcPGAjPNAXO5LKVH6uKq41PjMbRt9vMeC7EtLHvjwkIGgRZCUuBJkPza9CWYdpPGBbFKS7JbWy4FusR9C0hETjkdLbgEZBZBIZCj7RoxxuEnkK7sq6uo7RUZCi1RwfZBO78rMHCzJBXWcyTG2LH0Eu6ZClsD2KhFicFsYppPNTdrS8U886t';
+            $token = 'EAAIK8c4aojYBAD5ZADyOMEhFHvKRjL0JZC2CYkTzAPONhDu84PufVmCVMN9Ij0NdOWPtvIR3eF2cwIz0IMvZArZCZAAhJHE0rkPgskI1TcoUcr5ZBKXRk2abo3rCBOVpUtAZCjWOgpQVlAkX0G7cZArSnanXXacxTv8iU1hi2ZAkTaZCkWEdlUeXZBAaGAkCCZAitiUtzYAdRaWQZB1q5Q4KgWOgY';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
@@ -522,11 +522,11 @@ class MessageController extends Controller
             ];
 
             $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
-            $payload)->throw()->json();
+                $payload)->throw()->json();
 
             return response()->json([
-               'success' => true,
-               'data' => $message
+                'success' => true,
+                'data' => $message
             ],200);
 
         } catch (\Exception $e) {
@@ -639,7 +639,7 @@ class MessageController extends Controller
     public function processWebhook(Request $request){
         try {
 
-            $token = 'EAAIK8c4aojYBAMig4t8HJNbUWZBDxszghPJZAHA10maiBo1kgpfJu02ZAlS43StbfWtKTFNJU4ByCVJk7k3xJSkzUtLrrMdYBVtkym74EUXcXcNXhkrqVvzhRRCuZCuEjMguQeHWZAjZCuMeHFWQQV8NZBBJlARYCa4tzO1SHeqwjWXOUBqCwZBqJzhzkSAw9TUz3NZBDIFEvv43x2bI9i78j';
+            $token = 'EAAIK8c4aojYBAD5ZADyOMEhFHvKRjL0JZC2CYkTzAPONhDu84PufVmCVMN9Ij0NdOWPtvIR3eF2cwIz0IMvZArZCZAAhJHE0rkPgskI1TcoUcr5ZBKXRk2abo3rCBOVpUtAZCjWOgpQVlAkX0G7cZArSnanXXacxTv8iU1hi2ZAkTaZCkWEdlUeXZBAaGAkCCZAitiUtzYAdRaWQZB1q5Q4KgWOgY';
 
             $output_filename =  Str::random(16);
             $output_document = Str::random(1);
