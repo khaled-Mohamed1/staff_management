@@ -696,6 +696,12 @@ class MessageController extends Controller
                     'type' => $value['messages'][0]['type'],
                 ]);
 
+                if(!$conversation) {
+                    broadcast(new ConversationCreate($createConversation));
+                }
+
+                broadcast(new SendMessage($new_message));
+
                 if($value['messages'][0]['type'] == 'image'){
                     $media_id = $value['messages'][0]['image']['id'];
                 }elseif ($value['messages'][0]['type'] == 'video') {
