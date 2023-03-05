@@ -16,6 +16,9 @@ use Illuminate\Support\Str;
 
 class MessageController extends Controller
 {
+
+    public $token = 'EAAIK8c4aojYBAHUNwZB3nEAP8GUWFGOS3joyZCcuxexo5jGoGXyaxQ6MbNI5CFaXAG79ounYsU2jBqpBQZBZBkpVTPw45EeS4yCkICV6UiNZBX4USQzLnNx1sNjU9slhLXhZAAsn1IcHgk8qOV30Y9YEVVT4MonEZB5SYyEV6OZAZAvrb42g2ZBhCuSo2NtNA7JVdM6qjE3990cgZDZD';
+
     public function sendMessage(Request $request): \Illuminate\Http\JsonResponse
     {
 
@@ -46,7 +49,6 @@ class MessageController extends Controller
             broadcast(new SendMessage($new_message));
 
             //send message to WhatsApp
-            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
@@ -61,7 +63,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -121,7 +123,6 @@ class MessageController extends Controller
             broadcast(new SendMessage($new_message));
 
             //send message to WhatsApp
-            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
@@ -136,7 +137,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -196,7 +197,6 @@ class MessageController extends Controller
             broadcast(new SendMessage($new_message));
 
             //send message to WhatsApp
-            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
@@ -210,7 +210,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -339,7 +339,6 @@ class MessageController extends Controller
             broadcast(new SendMessage($new_message));
 
             //send message to WhatsApp
-            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
@@ -355,7 +354,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -419,7 +418,6 @@ class MessageController extends Controller
             broadcast(new SendMessage($new_message));
 
             //send message to WhatsApp
-            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
 
             $phoneId = '103217839375858';
             $version = 'v15.0';
@@ -435,7 +433,7 @@ class MessageController extends Controller
 
             ];
 
-            $message = Http::withToken($token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -572,9 +570,6 @@ class MessageController extends Controller
 
     public function processWebhook(Request $request){
         try {
-
-            $token = 'EAAIK8c4aojYBAGCGzay2iELEkvAsgpdaePxSqoaVFROWhY6CWx2XFR04xPLlXOzDKfrQu6MazpaZALSbBJ3BmOb65nO4TKoA87dpiYA4fSQLRiHItELZBZCNAXopoW8VKe7QlsdxKyLIbZAyESHrrxe0rfjD6VTjpXdZBLaZCrM7RqJ4ca5SWpcvcO8RRliIp4k2u8hgsRGT3ziC2khLrr';
-
             $output_filename =  Str::random(16);
             $output_document = Str::random(1);
 
@@ -651,7 +646,7 @@ class MessageController extends Controller
                     'phone_number_id' => '103217839375858',
                 ];
 
-                $url = Http::withToken($token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
+                $url = Http::withToken($this->token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
                     $payload)->throw()->json();
 
                 //download media
@@ -681,7 +676,7 @@ class MessageController extends Controller
                 curl_setopt($ch,CURLOPT_FILE , $fp);
 
                 $headers    = [];
-                $headers[]  = "Authorization: Bearer " . $token;
+                $headers[]  = "Authorization: Bearer " . $this->token;
                 $headers[]  = "Accept-Language:en-US,en;q=0.5";
                 $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
