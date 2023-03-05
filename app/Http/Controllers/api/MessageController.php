@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 class MessageController extends Controller
 {
 
-    public $token = 'EAAIK8c4aojYBAHUNwZB3nEAP8GUWFGOS3joyZCcuxexo5jGoGXyaxQ6MbNI5CFaXAG79ounYsU2jBqpBQZBZBkpVTPw45EeS4yCkICV6UiNZBX4USQzLnNx1sNjU9slhLXhZAAsn1IcHgk8qOV30Y9YEVVT4MonEZB5SYyEV6OZAZAvrb42g2ZBhCuSo2NtNA7JVdM6qjE3990cgZDZD';
+    public $token = 'EAAIK8c4aojYBANPCcjZASgjHlyTT8NAMKV1uWPkCMXKX0I3To6P7zWFVddiUDx88V5nZAJNXbf958DqwqrZAFvM3gD8Q7j7495XQo383ZBVSsfm89X62L7DZCwU3kDrbsqnmOHJW8cmFz3jtdyBjWwdMtBIuZBobSTgRA95pMNgZAYBdOViRGHyjYd48LkHK0fXLpaYZBvnIXgZDZD';
 
     public function sendMessage(Request $request): \Illuminate\Http\JsonResponse
     {
