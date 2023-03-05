@@ -232,22 +232,23 @@ class MessageController extends Controller
         try {
 
             $setting = Setting::find(1);
+            $output_document = Str::random(2);
 
             // Validate the request data
             $this->validate($request, [
                 'document' => 'file|mimes:zip,xlsx,csv,txt,pptx,docx,pdf|max:32768',
             ]);
 
-            $originalName = $request->document->getClientOriginalName();
+            $originalName = $output_document . $request->document->getClientOriginalName();
 
             $documentName = Str::random(16) . "." . $request->document->getClientOriginalExtension();
 
             // If an image was uploaded, store it in the file system or cloud storage
             if ($request->hasFile('document')) {
-                Storage::disk('public')->put('documents/' . $documentName, file_get_contents($request->document));
+                Storage::disk('public')->put('documents/' . $originalName, file_get_contents($request->document));
             }
 
-            $path = 'https://testing.pal-lady.com/storage/app/public/documents/' . $documentName;
+            $path = 'https://testing.pal-lady.com/storage/app/public/documents/' . $originalName;
 
             $conversation = Conversation::find($request->conversation_id);
             if($conversation->user_id == null){
@@ -283,7 +284,7 @@ class MessageController extends Controller
                 "document" => [
                     "link" => $path,
                     "caption"=> $request->caption ?? null,
-                    "filename" => $originalName
+                    "filename" => $request->document->getClientOriginalName()
                 ]
             ];
 
