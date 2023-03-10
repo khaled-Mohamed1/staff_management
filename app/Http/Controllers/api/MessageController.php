@@ -19,6 +19,9 @@ class MessageController extends Controller
 
     public $token = 'EAAIK8c4aojYBAGzlaFMqDwjSjWAelZAV48Jjsgxb9DJ53GZBlLfrVk53k40ofAGZBzTZBHaw70IePRGY4iBkxFIXVfJO8H0M5Yjc91d0QPwawZC2KKpzKPCgbeZBDYOeJ4uWsnkmvu8QSTsbcWeAZBt5gAEZCQA2Ey71jabXAzgfdHbKUHEKntv3SqGasEf2a8spLcBU3ZBYfLQZDZD';
 
+    public $phoneId = '117792047915414';
+
+
     public function sendMessage(Request $request): \Illuminate\Http\JsonResponse
     {
 
@@ -50,7 +53,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $phoneId = '103217839375858';
             $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
@@ -63,7 +65,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -124,7 +126,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $phoneId = '103217839375858';
             $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
@@ -137,7 +138,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -198,7 +199,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $phoneId = '103217839375858';
             $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
@@ -210,7 +210,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -274,7 +274,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $phoneId = '103217839375858';
             $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
@@ -288,7 +287,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -353,7 +352,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $phoneId = '103217839375858';
             $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
@@ -367,7 +365,7 @@ class MessageController extends Controller
 
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
