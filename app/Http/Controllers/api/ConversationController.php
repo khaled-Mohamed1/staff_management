@@ -22,6 +22,10 @@ class ConversationController extends Controller
             }elseif (auth()->user()->role_id == 2){
                 $conversations = Conversation::where('user_id', auth()->user()->id)
                         ->orWhere('user_id', null)->orderBy('last_time', 'desc')->get();
+                $conversations = Conversation::where(function ($query){
+                    $query->where('user_id', auth()->user()->id);
+                    $query->orWhere('user_id', null);
+                })->where('status', '!=', 'مكتملة');
             }
 
             return response()->json([
@@ -65,23 +69,16 @@ class ConversationController extends Controller
     {
         try {
 
-            if(auth()->user()->role_id == 1){
                 $conversation = Conversation::find($request->conversation_id);
 
-                $conversation->status = 'مكتمل';
+                $conversation->status = $request->status;
                 $conversation->save();
 
                 return response()->json([
                     'status' => true,
                     'conversation' => $conversation
                 ], 200);
-            }
 
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-                'error_number' => 404,
-            ], 401);
 
         } catch (\Exception $e) {
             // Return Json Response

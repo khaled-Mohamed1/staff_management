@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
@@ -115,7 +116,7 @@ class EmployeeController extends Controller
                 $request->all(),
                 [
                     'name' => 'required',
-                    'email' => 'required|email|unique:users,email,'.$request->user_id.',id',
+                    'email' => 'required|email,'.Rule::unique('users')->ignore($request->user_id),
                     'ID_NO' => 'required|numeric|digits:9',
                     'phone_NO' => 'required|numeric|digits:10',
                     'job' => 'required',
