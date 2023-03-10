@@ -21,6 +21,7 @@ class MessageController extends Controller
 
     public $phoneId = '117792047915414';
 
+    public $version = 'v16.0';
 
     public function sendMessage(Request $request): \Illuminate\Http\JsonResponse
     {
@@ -53,7 +54,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
@@ -65,7 +65,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$this->version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -126,7 +126,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
@@ -138,7 +137,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$this->version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -199,7 +198,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
@@ -210,7 +208,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$this->version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -274,7 +272,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
@@ -287,7 +284,7 @@ class MessageController extends Controller
                 ]
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$this->version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -352,7 +349,6 @@ class MessageController extends Controller
 
             //send message to WhatsApp
 
-            $version = 'v15.0';
             $payload = [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
@@ -365,7 +361,7 @@ class MessageController extends Controller
 
             ];
 
-            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$version.'/'.$this->phoneId.'/messages',
+            $message = Http::withToken($this->token)->post('https://graph.facebook.com/'.$this->version.'/'.$this->phoneId.'/messages',
                 $payload)->throw()->json();
 
             return response()->json([
@@ -417,6 +413,9 @@ class MessageController extends Controller
 
 
             $bodyContent = json_decode($request->getContent(), true);
+            $file = 'log.txt';
+            $data =json_encode($bodyContent)."\n";
+            file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
 
 
             $value = $bodyContent['entry'][0]['changes'][0]['value'];
