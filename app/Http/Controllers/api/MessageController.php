@@ -422,110 +422,113 @@ class MessageController extends Controller
 
             if(!empty($value['messages'])){
 
-                $conversation = Conversation::where('chat_ID',$value['contacts'][0]['wa_id'])->first();
+                $oldMessage = Message::where('message_id', $value['messages'][0]['id'])->first();
 
+                if(!$oldMessage){
+                    $conversation = Conversation::where('chat_ID',$value['contacts'][0]['wa_id'])->first();
 
-                if(!$conversation) {
-                    $createConversation = Conversation::create([
-                        'chat_ID' =>  $value['contacts'][0]['wa_id'],
-                        'name' => $value['contacts'][0]['profile']['name'] ?? 'guest',
-                        'image' => null,
-                        'isReadOnly' => false,
-                        'last_time' => $value['messages'][0]['timestamp']
+                    if(!$conversation) {
+                        $createConversation = Conversation::create([
+                            'chat_ID' =>  $value['contacts'][0]['wa_id'],
+                            'name' => $value['contacts'][0]['profile']['name'] ?? 'guest',
+                            'image' => null,
+                            'isReadOnly' => false,
+                            'last_time' => $value['messages'][0]['timestamp']
+                        ]);
+                    }else{
+                        $conversation->isReadOnly = false;
+                        $conversation->last_time = $value['messages'][0]['timestamp'];
+                        $conversation->save();
+                    }
+
+                    if($value['messages'][0]['type'] == 'text'){
+                        $body = $value['messages'][0]['text']['body'];
+                    }elseif($value['messages'][0]['type'] == 'image'){
+                        $body = $value['messages'][0]['image']['caption'] ?? null;
+                        $media = 'https://testing.pal-lady.com/public/images/' . $output_filename . '.jpeg';
+                    }elseif($value['messages'][0]['type'] == 'video'){
+                        $body = $value['messages'][0]['video']['caption'] ?? null;
+                        $media = 'https://testing.pal-lady.com/public/images/' . $output_filename . '.mp4';
+                    }elseif($value['messages'][0]['type'] == 'document'){
+                        $body = $value['messages'][0]['document']['caption'] ?? null;
+                        $media = 'https://testing.pal-lady.com/public/documents/' . $output_document . $value['messages'][0]['document']['filename'];
+                    }elseif($value['messages'][0]['type'] == 'audio'){
+                        $media = 'https://testing.pal-lady.com/public/audios/' . $output_filename . '.ogg';
+                    }
+
+                    $new_message = Message::create([
+                        'message_id' => $value['messages'][0]['id'],
+                        'user_id' => null,
+                        'conversation_id' =>  $conversation->id ?? $createConversation->id,
+                        'from' => $value['messages'][0]['from'],
+                        'to' => $value['metadata']['display_phone_number'],
+                        'body' => $body ?? null,
+                        'media' => $media ?? null,
+                        'fromMe' => false,
+                        'type' => $value['messages'][0]['type'],
                     ]);
-                }else{
-                    $conversation->isReadOnly = false;
-                    $conversation->last_time = $value['messages'][0]['timestamp'];
-                    $conversation->save();
+
+                    if(!$conversation) {
+                        broadcast(new ConversationCreate($createConversation));
+                    }
+
+                    broadcast(new SendMessage($new_message));
+
+                    if($value['messages'][0]['type'] == 'image'){
+                        $media_id = $value['messages'][0]['image']['id'];
+                    }elseif ($value['messages'][0]['type'] == 'video') {
+                        $media_id = $value['messages'][0]['video']['id'];
+                    }elseif ($value['messages'][0]['type'] == 'document') {
+                        $media_id = $value['messages'][0]['document']['id'];
+                    }elseif ($value['messages'][0]['type'] == 'audio') {
+                        $media_id = $value['messages'][0]['audio']['id'];
+                    }
+
+                    $version = 'v15.0';
+                    $payload = [
+                        'phone_number_id' => '103217839375858',
+                    ];
+
+                    $url = Http::withToken($this->token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
+                        $payload)->throw()->json();
+
+                    //download media
+                    $media_url =json_encode($url)."\n";
+                    $url_media = $url['url'];
+
+                    $ch = curl_init($url_media);
+
+                    if($value['messages'][0]['type'] == 'image'){
+                        $fp = fopen('images/'.$output_filename . '.jpeg', 'wb');
+                    }elseif ($value['messages'][0]['type'] == 'video') {
+                        $fp = fopen('videos/'.$output_filename . '.mp4', 'wb');
+                    }elseif ($value['messages'][0]['type'] == 'document') {
+                        $output_filename = $output_document . $value['messages'][0]['document']['filename'];
+                        $fp = fopen('documents/'.$output_filename, 'wb');
+                    }elseif ($value['messages'][0]['type'] == 'audio') {
+                        $fp = fopen('audios/'.$output_filename . '.ogg', 'wb');
+                    }
+
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 400);
+                    curl_setopt($ch, CURLOPT_HEADER, 0);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch,CURLOPT_CUSTOMREQUEST , "GET");
+                    curl_setopt($ch,CURLOPT_ENCODING , "");
+                    curl_setopt($ch,CURLOPT_FILE , $fp);
+
+                    $headers    = [];
+                    $headers[]  = "Authorization: Bearer " . $this->token;
+                    $headers[]  = "Accept-Language:en-US,en;q=0.5";
+                    $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    $raw = curl_exec($ch);
+
+                    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                    curl_close($ch);
                 }
-
-                if($value['messages'][0]['type'] == 'text'){
-                    $body = $value['messages'][0]['text']['body'];
-                }elseif($value['messages'][0]['type'] == 'image'){
-                    $body = $value['messages'][0]['image']['caption'] ?? null;
-                    $media = 'https://testing.pal-lady.com/public/images/' . $output_filename . '.jpeg';
-                }elseif($value['messages'][0]['type'] == 'video'){
-                    $body = $value['messages'][0]['video']['caption'] ?? null;
-                    $media = 'https://testing.pal-lady.com/public/images/' . $output_filename . '.mp4';
-                }elseif($value['messages'][0]['type'] == 'document'){
-                    $body = $value['messages'][0]['document']['caption'] ?? null;
-                    $media = 'https://testing.pal-lady.com/public/documents/' . $output_document . $value['messages'][0]['document']['filename'];
-                }elseif($value['messages'][0]['type'] == 'audio'){
-                    $media = 'https://testing.pal-lady.com/public/audios/' . $output_filename . '.ogg';
-                }
-
-                $new_message = Message::create([
-                    'message_id' => $value['messages'][0]['id'],
-                    'user_id' => null,
-                    'conversation_id' =>  $conversation->id ?? $createConversation->id,
-                    'from' => $value['messages'][0]['from'],
-                    'to' => $value['metadata']['display_phone_number'],
-                    'body' => $body ?? null,
-                    'media' => $media ?? null,
-                    'fromMe' => false,
-                    'type' => $value['messages'][0]['type'],
-                ]);
-
-                if(!$conversation) {
-                    broadcast(new ConversationCreate($createConversation));
-                }
-
-                broadcast(new SendMessage($new_message));
-
-                if($value['messages'][0]['type'] == 'image'){
-                    $media_id = $value['messages'][0]['image']['id'];
-                }elseif ($value['messages'][0]['type'] == 'video') {
-                    $media_id = $value['messages'][0]['video']['id'];
-                }elseif ($value['messages'][0]['type'] == 'document') {
-                    $media_id = $value['messages'][0]['document']['id'];
-                }elseif ($value['messages'][0]['type'] == 'audio') {
-                    $media_id = $value['messages'][0]['audio']['id'];
-                }
-
-                $version = 'v15.0';
-                $payload = [
-                    'phone_number_id' => '103217839375858',
-                ];
-
-                $url = Http::withToken($this->token)->get('https://graph.facebook.com/'.$version.'/'.$media_id.'/',
-                    $payload)->throw()->json();
-
-                //download media
-                $media_url =json_encode($url)."\n";
-                $url_media = $url['url'];
-
-                $ch = curl_init($url_media);
-
-                if($value['messages'][0]['type'] == 'image'){
-                    $fp = fopen('images/'.$output_filename . '.jpeg', 'wb');
-                }elseif ($value['messages'][0]['type'] == 'video') {
-                    $fp = fopen('videos/'.$output_filename . '.mp4', 'wb');
-                }elseif ($value['messages'][0]['type'] == 'document') {
-                    $output_filename = $output_document . $value['messages'][0]['document']['filename'];
-                    $fp = fopen('documents/'.$output_filename, 'wb');
-                }elseif ($value['messages'][0]['type'] == 'audio') {
-                    $fp = fopen('audios/'.$output_filename . '.ogg', 'wb');
-                }
-
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 400);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch,CURLOPT_CUSTOMREQUEST , "GET");
-                curl_setopt($ch,CURLOPT_ENCODING , "");
-                curl_setopt($ch,CURLOPT_FILE , $fp);
-
-                $headers    = [];
-                $headers[]  = "Authorization: Bearer " . $this->token;
-                $headers[]  = "Accept-Language:en-US,en;q=0.5";
-                $headers[]  = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                $raw = curl_exec($ch);
-
-                $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-                curl_close($ch);
 
             }
 
