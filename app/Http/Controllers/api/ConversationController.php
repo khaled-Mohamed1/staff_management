@@ -47,10 +47,17 @@ class ConversationController extends Controller
         try {
 
             $conversation = Conversation::find($request->conversation_id);
+            $cov_messages = Message::where('conversation_id', $conversation->id)->latest()->paginate();
 
+            if(auth()->user()->role_id == 1){
+                return response()->json([
+                    'status' => true,
+                    'conversation' => ConversationResource::make($conversation),
+                    'messages' => new MessageResource($cov_messages),
+                ], 200);
+            }
             if($conversation->user_id == auth()->user()->id || $conversation->user_id == null){
                 if($conversation->status != 'مكتملة' || $conversation->status != 'فاشلة'){
-                    $cov_messages = Message::where('conversation_id', $conversation->id)->latest()->paginate();
 
                     return response()->json([
                         'status' => true,
