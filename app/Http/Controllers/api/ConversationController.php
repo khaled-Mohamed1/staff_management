@@ -25,7 +25,7 @@ class ConversationController extends Controller
                 $conversations = Conversation::where(function ($query){
                     $query->where('user_id', auth()->user()->id);
                     $query->orWhere('user_id', null);
-                })->where('status', '!=', 'مكتملة');
+                })->where('status', '!=', 'مكتملة')->get();
             }
 
             return response()->json([
